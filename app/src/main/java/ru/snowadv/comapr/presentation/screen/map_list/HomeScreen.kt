@@ -29,8 +29,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.snowadv.comapr.R
+import ru.snowadv.comapr.presentation.screen.roadmap.RoadMapsScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
-
 
 
 enum class BottomNavigationItem(
@@ -88,7 +88,10 @@ fun HomeScreen(
             startDestination = "roadmaps"
         ) {
             composable("roadmaps") {
-
+                RoadMapsScreen(
+                    mainViewModel = mainViewModel,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             composable("sessions") {
 
