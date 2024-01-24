@@ -25,8 +25,11 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.presentation.screen.login.LoginScreen
+import ru.snowadv.comapr.presentation.screen.map_list.HomeScreen
+import ru.snowadv.comapr.presentation.screen.splash.SplashScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.ui.theme.ComaprTheme
 
@@ -42,21 +45,20 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(true) {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    mainViewModel.eventFlow.onEach {
+                    mainViewModel.eventFlow.onEach { // subscribe to ui events
                         Log.d(TAG, "got event: $it")
                         when (it) {
                             is UiEvent.ShowSnackbar -> snackbarHostState.showSnackbar(it.message)
-                            is UiEvent.Navigate -> {}
                         }
                     }.launchIn(this)
-                }
-            }
 
-            LaunchedEffect(mainViewModel.user.value) {
-                mainViewModel.user.value?.let {
-                    navController.navigate("home")
-                } ?: run {
-                    navController.navigate("login")
+                    mainViewModel.navigationFlow.onEach {  // subscribe to navigation events
+                        when (it) {
+                            is NavigationEvent.ToHomeScreen, is NavigationEvent.ToLoginScreen -> {
+                                navController.navigate(it.route)
+                            }
+                        }
+                    }.launchIn(this)
                 }
             }
 
@@ -68,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        startDestination = "login"
+                        startDestination = "splash_screen"
                     ) {
                         composable("login") {
                             LoginScreen(
@@ -78,7 +80,13 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("home") {
-
+                            HomeScreen(
+                                modifier = Modifier.fillMaxSize(),
+                                mainViewModel = mainViewModel
+                            )
+                        }
+                        composable("splash_screen") {
+                            SplashScreen(Modifier.fillMaxSize())
                         }
                     }
                 }

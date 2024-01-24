@@ -14,6 +14,7 @@ import ru.snowadv.comapr.data.remote.dto.SignupInfoDto
 import ru.snowadv.comapr.data.remote.dto.JwtAuthDto
 import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
+import ru.snowadv.comaprbackend.dto.CategorizedRoadMapsDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 
 interface ComaprApi {
@@ -35,52 +36,52 @@ interface ComaprApi {
     suspend fun getCategory(@Path("id") id: Long): CategoryDto
 
     @POST("/api/v1/category/create")
-    fun createCategory(@Header("Authorization") token: String, @Body dto: CategoryDto): CategoryDto
+    fun createCategory(@Body dto: CategoryDto): CategoryDto
 
     @GET("/api/v1/roadmap")
     suspend fun fetchRoadMap(@Query("id") id: Long): RoadMapDto
 
     @GET("/api/v1/roadmap/list")
-    suspend fun fetchMaps(@Query("statusId") statusId: Int?, @Query("categoryId") categoryId: Long?): List<RoadMapDto>
+    suspend fun fetchMaps(@Query("statusId") statusId: Int?, @Query("categoryId") categoryId: Long?): List<CategorizedRoadMapsDto>
 
     @POST("/api/v1/roadmap/vote")
-    suspend fun voteForRoadMap(@Header("Authorization") token: String, @Query("id") id: Long, @Query("like") like: Boolean): ResponseInfoDto
+    suspend fun voteForRoadMap(@Query("id") id: Long, @Query("like") like: Boolean): ResponseInfoDto
 
     @POST("/api/v1/roadmap/changeStatus")
-    suspend fun changeVerificationStatus(@Header("Authorization") token: String, @Query("id") id: Long, @Query("statusId") statusId: Int): RoadMapDto
+    suspend fun changeVerificationStatus(@Query("id") id: Long, @Query("statusId") statusId: Int): RoadMapDto
 
     @POST("/api/v1/roadmap/update")
-    suspend fun updateRoadMap(@Header("Authorization") token: String, @Body dto: RoadMapDto): RoadMapDto
+    suspend fun updateRoadMap(@Body dto: RoadMapDto): RoadMapDto
 
     @POST("/api/v1/roadmap/create")
-    suspend fun createRoadMap(@Header("Authorization") token: String, @Body dto: RoadMapDto): RoadMapDto
+    suspend fun createRoadMap(@Body dto: RoadMapDto): RoadMapDto
 
     @GET("/api/v1/session/list")
     suspend fun fetchSessions(): List<MapSessionDto>
 
     @GET("/api/v1/session/{id}")
-    suspend fun getSession(@Header("Authorization") token: String = "", @Path("id") id: Long): MapSessionDto
+    suspend fun getSession(@Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/create")
-    suspend fun createSession(@Header("Authorization") token: String, @Body dto: ClearMapSessionDto): MapSessionDto
+    suspend fun createSession(@Body dto: ClearMapSessionDto): MapSessionDto
 
     @POST("/api/v1/session/{id}/update")
-    suspend fun updateSession(@Header("Authorization") token: String, @Body dto: ClearMapSessionDto, @Path("id") id: Long): MapSessionDto
+    suspend fun updateSession(@Body dto: ClearMapSessionDto, @Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/start")
-    suspend fun startSession(@Header("Authorization") token: String, @Path("id") id: Long): ResponseInfoDto
+    suspend fun startSession(@Path("id") id: Long): ResponseInfoDto
 
     @POST("/api/v1/session/{id}/end")
-    suspend fun endSession(@Header("Authorization") token: String, @Path("id") id: Long): ResponseInfoDto
+    suspend fun endSession(@Path("id") id: Long): ResponseInfoDto
 
     @POST("/api/v1/session/{id}/join")
-    suspend fun joinSession(@Header("Authorization") token: String, @Path("id") id: Long): MapSessionDto
+    suspend fun joinSession(@Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/leave")
-    suspend fun leaveSession(@Header("Authorization") token: String, @Path("id") id: Long): ResponseInfoDto
+    suspend fun leaveSession(@Path("id") id: Long): ResponseInfoDto
 
     @POST("/api/v1/session/{id}/sendMessage")
-    suspend fun sendMessage(@Header("Authorization") token: String, @Path("id") id: Long, @Body message: NewSessionChatMessageDto): ResponseInfoDto
+    suspend fun sendMessage(@Path("id") id: Long, @Body message: NewSessionChatMessageDto): ResponseInfoDto
 
     @POST("/api/v1/session/{id}/markTask/{taskId}")
     suspend fun markTask(

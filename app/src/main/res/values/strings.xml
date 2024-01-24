@@ -5,4 +5,8 @@
     <string name="password">Password</string>
     <string name="already_registered">Already registered?</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="road_map">Road map</string>
+    <string name="road_maps">Road maps</string>
+    <string name="sessions">Sessions</string>
+    <string name="profile">Profile</string>
 </resources>

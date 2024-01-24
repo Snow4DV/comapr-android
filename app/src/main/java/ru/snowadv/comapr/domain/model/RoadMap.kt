@@ -10,7 +10,8 @@ data class RoadMap(
     val nodes: List<Node>,
     val likes: Int,
     val dislikes: Int,
-    val categoryName: String
+    val categoryName: String,
+    val verificationStatus: VerificationStatus
 ) {
     fun toDto(): RoadMapDto {
         return RoadMapDto(
@@ -21,7 +22,19 @@ data class RoadMap(
             nodes.map { it.toDto() },
             likes,
             dislikes,
-            categoryName
+            categoryName,
+            verificationStatus.id
         )
+    }
+
+
+
+    enum class VerificationStatus(val id: Int) {
+        HIDDEN(0), UNVERIFIED(1), COMMUNITY_CHOICE(2), VERIFIED(3);
+        companion object {
+            fun fromId(id: Int): VerificationStatus {
+                return entries.find { it.id == id } ?: error("no status with id $id")
+            }
+        }
     }
 }

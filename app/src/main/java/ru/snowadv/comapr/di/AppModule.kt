@@ -6,8 +6,10 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Authenticator
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.snowadv.comapr.data.local.UserDataDao
@@ -15,15 +17,20 @@ import ru.snowadv.comapr.data.local.UserDataDb
 import ru.snowadv.comapr.data.local.converter.JsonConverter
 import ru.snowadv.comapr.data.local.converter.JsonConverterImpl
 import ru.snowadv.comapr.data.local.converter.RoomTypeConverter
+import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.data.remote.ComaprApi
 import ru.snowadv.comapr.data.repository.DataRepositoryImpl
 import ru.snowadv.comapr.data.repository.SessionRepositoryImpl
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.domain.repository.SessionRepository
+import ru.snowadv.comapr.presentation.EventAggregator
+import ru.snowadv.comapr.presentation.EventAggregatorImpl
 import ru.snowadv.comapr.presentation.use_case.AuthenticateUseCase
 import ru.snowadv.comapr.presentation.use_case.SignInUseCase
 import ru.snowadv.comapr.presentation.use_case.SignUpUseCase
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,7 +38,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGson(): Gson{
+    fun provideGson(): Gson {
         return Gson()
     }
 
@@ -75,8 +82,29 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApi(): ComaprApi {
-        return Retrofit.Builder().baseUrl(ComaprApi.BASE_URL)
+    fun provideApiAuthenticator(): ApiAuthenticator {
+        return ApiAuthenticator()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInterceptor(apiAuthenticator: ApiAuthenticator): Interceptor {
+        return apiAuthenticator
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(interceptor: Interceptor): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor(interceptor)
+            .connectTimeout(15, TimeUnit.SECONDS).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApi(okHttpClient: OkHttpClient): ComaprApi {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(ComaprApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ComaprApi::class.java)
@@ -98,5 +126,11 @@ object AppModule {
     @Singleton
     fun provideSignUpUseCase(sessionRepo: SessionRepository): SignUpUseCase {
         return SignUpUseCase(sessionRepo)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventAggregator(): EventAggregator {
+        return EventAggregatorImpl()
     }
 }

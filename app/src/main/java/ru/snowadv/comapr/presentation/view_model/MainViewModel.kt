@@ -3,19 +3,29 @@ package ru.snowadv.comapr.presentation.view_model
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.Authenticator
+import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
+import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.domain.model.AuthUser
+import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.use_case.AuthenticateUseCase
 import ru.snowadv.comapr.presentation.use_case.SignInUseCase
 import ru.snowadv.comapr.presentation.use_case.SignUpUseCase
@@ -26,26 +36,47 @@ class MainViewModel @Inject constructor(
     private val authenticateCase: AuthenticateUseCase,
     private val signInCase: SignInUseCase,
     private val signUpCase: SignUpUseCase,
+    private val authenticator: ApiAuthenticator,
+    private val eventAggregator: EventAggregator
 ) : ViewModel() {
-    private val _user = mutableStateOf<AuthUser?>(null)
-    val user: State<AuthUser?> = _user
+    private val _user = MutableStateFlow<AuthUser?>(null)
+    val user: StateFlow<AuthUser?> = _user.asStateFlow()
     val authorized = _user.value != null
 
     private val _loading = mutableStateOf(false)
     private val loading: State<Boolean> = _loading
 
-    private val eventChannel = Channel<UiEvent>()
+    private val eventChannel = eventAggregator.eventChannel
     val eventFlow: Flow<UiEvent> = eventChannel.receiveAsFlow()
 
 
-    private val navigationChannel = Channel<UiEvent>()
-    val navigationFlow: Flow<UiEvent> = navigationChannel.receiveAsFlow()
+    private val navigationChannel = Channel<NavigationEvent>()
+    val navigationFlow: Flow<NavigationEvent> = navigationChannel.receiveAsFlow()
 
-    suspend fun authenticate() {
-        withContext(Dispatchers.IO) {
-            _loading.value = true
-            updateAuthUser(authenticateCase())
+    init {
+        viewModelScope.launch{
+            authenticate()
         }
+
+        viewModelScope.launch {
+            user.onEach {
+                it?.let {
+                    navigationChannel.send(NavigationEvent.ToHomeScreen())
+                } /*?: run {
+                    navigationChannel.send(NavigationEvent.ToLoginScreen())
+                }*/
+            }.launchIn(this)
+        }
+    }
+
+    private suspend fun authenticate() {
+        _loading.value = true
+        var result: Resource<AuthUser>
+        withContext(Dispatchers.IO) {
+            result = authenticateCase()
+        }
+        updateAuthUser(result)
+
     }
 
     fun signIn(username: String, password: String) {
@@ -70,6 +101,9 @@ class MainViewModel @Inject constructor(
             is Resource.Error -> {
                 eventChannel.send(UiEvent.ShowSnackbar(resource.message ?: "Unknown error"))
                 _loading.value = false
+                navigationChannel.send(NavigationEvent.ToLoginScreen())
+                // go to login screen on auth fail otherwise observers won't be notified with
+                // another null value
             }
 
             is Resource.Loading -> {
@@ -80,6 +114,7 @@ class MainViewModel @Inject constructor(
                 resource.data?.let {
                     eventChannel.send(UiEvent.ShowSnackbar("Authorized successfully!"))
                     _user.value = it
+                    authenticator.token = it.token
                     _loading.value = false
                 }
             }

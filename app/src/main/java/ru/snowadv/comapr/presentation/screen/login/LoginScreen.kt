@@ -41,9 +41,6 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(true) {
-        mainViewModel.authenticate()
-    }
 
     AuthScreenContent(
         modifier = modifier,
