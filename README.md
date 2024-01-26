@@ -15,3 +15,16 @@ This projects aims to bring new cooperative way to study to your phone.
 ![sessions](screenshots/2.jpg)
 ![profile](screenshots/3.jpg)
 ![roadmap](screenshots/4.jpg)
+
+
+## Stack/other info
+* Jetpack compose + Material3
+* Kotlin+concurrency
+* Retrofit
+* Room
+* Clean architecture
+* Dagger-hilt 
+
+## Backend
+Backend was written on Spring+Kotlin. 
+[Github repository link](https://github.com/Snow4DV/comapr-backend)
