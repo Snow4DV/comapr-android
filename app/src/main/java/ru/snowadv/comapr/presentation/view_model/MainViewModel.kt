@@ -69,6 +69,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
+
+    fun navigate(navigationEvent: NavigationEvent) {
+        viewModelScope.launch {
+            navigationChannel.send(navigationEvent)
+        }
+    }
+
+    fun sendUiEvent(uiEvent: UiEvent) {
+        viewModelScope.launch {
+            eventChannel.send(uiEvent)
+        }
+    }
     private suspend fun authenticate() {
         _loading.value = true
         var result: Resource<AuthUser>
@@ -112,7 +124,7 @@ class MainViewModel @Inject constructor(
 
             is Resource.Success -> {
                 resource.data?.let {
-                    eventChannel.send(UiEvent.ShowSnackbar("Authorized successfully!"))
+                    //eventChannel.send(UiEvent.ShowSnackbar("Authorized successfully!"))
                     _user.value = it
                     authenticator.token = it.token
                     _loading.value = false

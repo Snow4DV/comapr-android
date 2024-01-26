@@ -3,20 +3,21 @@ package ru.snowadv.comapr.di
 import android.app.Application
 import androidx.room.Room
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.snowadv.comapr.data.local.UserDataDao
 import ru.snowadv.comapr.data.local.UserDataDb
-import ru.snowadv.comapr.data.local.converter.JsonConverter
-import ru.snowadv.comapr.data.local.converter.JsonConverterImpl
-import ru.snowadv.comapr.data.local.converter.RoomTypeConverter
+import ru.snowadv.comapr.data.converter.JsonConverter
+import ru.snowadv.comapr.data.converter.JsonConverterImpl
+import ru.snowadv.comapr.data.converter.RoomTypeConverter
 import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.data.remote.ComaprApi
 import ru.snowadv.comapr.data.repository.DataRepositoryImpl
@@ -26,8 +27,11 @@ import ru.snowadv.comapr.domain.repository.SessionRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.EventAggregatorImpl
 import ru.snowadv.comapr.presentation.use_case.AuthenticateUseCase
+import ru.snowadv.comapr.presentation.use_case.GetUserProfileUseCase
 import ru.snowadv.comapr.presentation.use_case.SignInUseCase
 import ru.snowadv.comapr.presentation.use_case.SignUpUseCase
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -39,7 +43,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGson(): Gson {
-        return Gson()
+        return GsonBuilder().registerTypeAdapter(
+            LocalDateTime::class.java,
+            JsonDeserializer { json, type, jsonDeserializationContext ->
+                LocalDateTime.parse(json.asJsonPrimitive.asString)
+            }).create()
     }
 
     @Provides
@@ -99,13 +107,20 @@ object AppModule {
             .connectTimeout(15, TimeUnit.SECONDS).build()
     }
 
+
     @Provides
     @Singleton
-    fun provideApi(okHttpClient: OkHttpClient): ComaprApi {
+    fun provideGsonConverterFactory(gson: Gson): GsonConverterFactory {
+        return GsonConverterFactory.create(gson)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApi(okHttpClient: OkHttpClient, factory: GsonConverterFactory): ComaprApi {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(ComaprApi.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(factory)
             .build()
             .create(ComaprApi::class.java)
     }
@@ -132,5 +147,11 @@ object AppModule {
     @Singleton
     fun provideEventAggregator(): EventAggregator {
         return EventAggregatorImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserProfileUseCase(dataRepo: DataRepository): GetUserProfileUseCase {
+        return GetUserProfileUseCase(dataRepo)
     }
 }

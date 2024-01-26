@@ -1,9 +1,8 @@
-package ru.snowadv.comapr.presentation.screen.roadmap
+package ru.snowadv.comapr.presentation.screen.roadmap.list
 
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
-import kotlin.enums.EnumEntries
 
 data class RoadMapsScreenState(
     val roadMaps: List<CategorizedRoadMaps> = emptyList(),
@@ -24,7 +23,7 @@ data class RoadMapsScreenState(
 
     companion object {
         fun getVerificationStatuses(): List<RoadMap.VerificationStatus> {
-            return RoadMap.VerificationStatus.entries.toList().reversed()
+            return RoadMap.VerificationStatus.entries.reversed()
         }
     }
 }

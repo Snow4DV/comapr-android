@@ -4,9 +4,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.flow.FlowCollector
 import retrofit2.HttpException
 import ru.snowadv.comapr.R
+import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.RoadMap
 
 
@@ -17,8 +19,19 @@ suspend fun <T> FlowCollector<T>.safeApiCall(
     try {
         block()
     } catch (e: HttpException) {
-        onException(e.response()?.message() ?: "Strange error")
+        onException(e.response()?.errorBody()?.string() ?: "Strange error")
     } catch(e: Exception) {
         onException(e.message ?: "Very strange error")
+    }
+}
+
+@Composable
+fun Category.toDisplayName(): String {
+    return when(this.name) {
+        "VERIFIED" -> stringResource(R.string.verified)
+        "COMMUNITY_CHOICE" -> stringResource(R.string.community_choice)
+        "UNVERIFIED" -> stringResource(R.string.unverified)
+        "HIDDEN" -> stringResource(R.string.hidden)
+        else -> this.name
     }
 }

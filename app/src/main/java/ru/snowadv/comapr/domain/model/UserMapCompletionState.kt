@@ -4,5 +4,5 @@ package ru.snowadv.comapr.domain.model
 data class UserMapCompletionState(
     val id: Long,
     val user: User,
-    val finishedTasksIds: List<Long>
+    val finishedTasksIds: Set<Long>
 )

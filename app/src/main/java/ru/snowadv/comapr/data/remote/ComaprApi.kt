@@ -14,6 +14,7 @@ import ru.snowadv.comapr.data.remote.dto.SignupInfoDto
 import ru.snowadv.comapr.data.remote.dto.JwtAuthDto
 import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
+import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMapsDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 
@@ -89,6 +90,10 @@ interface ComaprApi {
         @Path("taskId") taskId: Long,
         @Query("state") state: Boolean
     ): MapSessionDto
+
+
+    @GET("/api/v1/user/info")
+    suspend fun getUserInfo(): UserAndSessionsDto
 
     companion object {
         const val BASE_URL = "http://192.168.0.15:8080/"

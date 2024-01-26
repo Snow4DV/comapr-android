@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -14,51 +13,42 @@ import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.presentation.EventAggregator
-import ru.snowadv.comapr.presentation.screen.roadmap.list.RoadMapsScreenState
+import ru.snowadv.comapr.presentation.screen.session.list.SessionsScreenState
 import javax.inject.Inject
 
 
 @HiltViewModel
-class RoadMapsViewModel @Inject constructor(
+class SessionsViewModel @Inject constructor(
     private val dataRepository: DataRepository,
     private val eventAggregator: EventAggregator
 ): ViewModel() {
 
-    private val _state: MutableState<RoadMapsScreenState> = mutableStateOf(RoadMapsScreenState(loading = true))
-    val state: State<RoadMapsScreenState> = _state
+    private val _state: MutableState<SessionsScreenState> = mutableStateOf(SessionsScreenState(loading = true))
+    val state: State<SessionsScreenState> = _state
 
-
-
-    fun setStatusIdAndCategoryIdFilters(statusId: Int?, categoryId: Long?) {
-        _state.value = _state.value.copy(
-            filterStatusId = statusId,
-            filterCategoryId = categoryId
-        )
-        getRoadMaps()
-    }
-    fun getRoadMaps() {
+    fun getSessions() {
         viewModelScope.launch {
             state.value.apply {
-                dataRepository.fetchMaps(filterStatusId, filterCategoryId).onEach {
-                    val data = it.data ?: _state.value.roadMaps
+                dataRepository.fetchSessions().onEach {
+                    val data = it.data ?: _state.value.sessions
                     when(it) {
                         is Resource.Loading -> {
                             _state.value = _state.value.copy(
                                 loading = true,
-                                roadMaps = data
+                                sessions = data
                             )
                         }
                         is Resource.Error -> {
                             _state.value = _state.value.copy(
                                 loading = false,
-                                roadMaps = data
+                                sessions = data
                             )
                             eventAggregator.eventChannel.send(UiEvent.ShowSnackbar(it.message ?: "Unknown error"))
                         }
                         is Resource.Success -> {
                             _state.value = _state.value.copy(
                                 loading = false,
-                                roadMaps = data
+                                sessions = data
                             )
                         }
                     }

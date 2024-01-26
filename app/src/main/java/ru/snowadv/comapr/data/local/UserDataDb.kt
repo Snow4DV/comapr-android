@@ -3,7 +3,7 @@ package ru.snowadv.comapr.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import ru.snowadv.comapr.data.local.converter.RoomTypeConverter
+import ru.snowadv.comapr.data.converter.RoomTypeConverter
 import ru.snowadv.comapr.data.local.entity.UserData
 
 @Database(

@@ -9,6 +9,6 @@ data class UserMapCompletionStateDto(
     val tasksStates: List<UserTaskCompletionStateDto>
 ) {
     fun toModel(): UserMapCompletionState {
-        return UserMapCompletionState(id, user.toModel(), tasksStates.filter { it.state }.map { it.taskId })
+        return UserMapCompletionState(id, user.toModel(), tasksStates.asSequence().filter { it.state }.map { it.taskId }.toSet())
     }
 }

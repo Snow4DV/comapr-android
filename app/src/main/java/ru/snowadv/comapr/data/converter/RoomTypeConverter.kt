@@ -1,4 +1,4 @@
-package ru.snowadv.comapr.data.local.converter
+package ru.snowadv.comapr.data.converter
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter

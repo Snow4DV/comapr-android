@@ -13,13 +13,14 @@ import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
+import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
 
 class DataRepositoryImpl(
     private val api: ComaprApi
 ) : DataRepository {
-    override suspend fun getCategories(): Flow<Resource<List<Category>>> = flow {
+    override fun getCategories(): Flow<Resource<List<Category>>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.getCategories().map { it.toModel() }))
@@ -28,7 +29,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun getCategory(id: Long): Flow<Resource<Category>> = flow {
+    override fun getCategory(id: Long): Flow<Resource<Category>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.getCategory(id).toModel()))
@@ -46,7 +47,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun fetchRoadMap(id: Long): Flow<Resource<RoadMap>> = flow {
+    override fun fetchRoadMap(id: Long): Flow<Resource<RoadMap>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.fetchRoadMap(id).toModel()))
@@ -55,7 +56,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun fetchMaps(
+    override fun fetchMaps(
         statusId: Int?, categoryId: Long?
     ): Flow<Resource<List<CategorizedRoadMaps>>> = flow {
         emit(Resource.Loading())
@@ -66,7 +67,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun voteForRoadMap(
+    override fun voteForRoadMap(
         id: Long, like: Boolean
     ): Flow<Resource<ResponseInfo>> = flow {
         emit(Resource.Loading())
@@ -77,7 +78,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun changeVerificationStatus(
+    override fun changeVerificationStatus(
 
         id: Long, statusId: Int
     ): Flow<Resource<RoadMap>> = flow {
@@ -89,7 +90,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun updateRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>> = flow {
+    override fun updateRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.updateRoadMap(dto).toModel()))
@@ -98,7 +99,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun createRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>> = flow {
+    override fun createRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.createRoadMap(dto).toModel()))
@@ -107,7 +108,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun fetchSessions(): Flow<Resource<List<MapSession>>> = flow {
+    override fun fetchSessions(): Flow<Resource<List<MapSession>>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.fetchSessions().map { it.toModel() }))
@@ -116,7 +117,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun getSession(id: Long): Flow<Resource<MapSession>> = flow {
+    override fun getSession(id: Long): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.getSession(id).toModel()))
@@ -125,7 +126,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun createSession(
+    override fun createSession(
         dto: ClearMapSessionDto
     ): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
@@ -136,7 +137,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun updateSession(
+    override fun updateSession(
         dto: ClearMapSessionDto, id: Long
     ): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
@@ -147,7 +148,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun startSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
+    override fun startSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.startSession(id).toModel()))
@@ -156,7 +157,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun endSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
+    override fun endSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.endSession(id).toModel()))
@@ -165,7 +166,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun joinSession(id: Long): Flow<Resource<MapSession>> = flow {
+    override fun joinSession(id: Long): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.joinSession(id).toModel()))
@@ -174,7 +175,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun leaveSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
+    override fun leaveSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.leaveSession(id).toModel()))
@@ -183,7 +184,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun sendMessage(
+    override fun sendMessage(
         id: Long, message: NewSessionChatMessageDto
     ): Flow<Resource<ResponseInfo>> = flow {
         emit(Resource.Loading())
@@ -194,12 +195,21 @@ class DataRepositoryImpl(
         })
     }
 
-    override suspend fun markTask(
+    override fun markTask(
         id: Long, taskId: Long, state: Boolean
     ): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.markTask(id, taskId, state).toModel()))
+        }, onException = {
+            emit(Resource.Error(it))
+        })
+    }
+
+    override fun getUserInfo(): Flow<Resource<UserAndSessions>> = flow {
+        emit(Resource.Loading())
+        safeApiCall(block = {
+            emit(Resource.Success(api.getUserInfo().toModel()))
         }, onException = {
             emit(Resource.Error(it))
         })

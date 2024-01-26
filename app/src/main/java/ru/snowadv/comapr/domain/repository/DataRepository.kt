@@ -13,38 +13,42 @@ import ru.snowadv.comapr.data.remote.dto.ClearMapSessionDto
 import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.RoadMapDto
+import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
+import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 
 interface DataRepository {
-    suspend fun getCategories(): Flow<Resource<List<Category>>>
-    suspend fun getCategory( id: Long): Flow<Resource<Category>>
+    fun getCategories(): Flow<Resource<List<Category>>>
+    fun getCategory( id: Long): Flow<Resource<Category>>
     fun createCategory(dto: CategoryDto): Flow<Resource<Category>>
 
-    suspend fun fetchRoadMap(id: Long): Flow<Resource<RoadMap>>
-    suspend fun fetchMaps(statusId: Int? = null, categoryId: Long? = null): Flow<Resource<List<CategorizedRoadMaps>>>
-    suspend fun voteForRoadMap(id: Long, like: Boolean): Flow<Resource<ResponseInfo>>
-    suspend fun changeVerificationStatus(id: Long, statusId: Int): Flow<Resource<RoadMap>>
-    suspend fun updateRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
-    suspend fun createRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
+    fun fetchRoadMap(id: Long): Flow<Resource<RoadMap>>
+    fun fetchMaps(statusId: Int? = null, categoryId: Long? = null): Flow<Resource<List<CategorizedRoadMaps>>>
+    fun voteForRoadMap(id: Long, like: Boolean): Flow<Resource<ResponseInfo>>
+    fun changeVerificationStatus(id: Long, statusId: Int): Flow<Resource<RoadMap>>
+    fun updateRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
+    fun createRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
 
 
-    suspend fun fetchSessions(): Flow<Resource<List<MapSession>>>
-    suspend fun getSession(id: Long): Flow<Resource<MapSession>>
-    suspend fun createSession(dto: ClearMapSessionDto): Flow<Resource<MapSession>>
-    suspend fun updateSession(dto: ClearMapSessionDto, id: Long): Flow<Resource<MapSession>>
-    suspend fun startSession(id: Long): Flow<Resource<ResponseInfo>>
-    suspend fun endSession(id: Long): Flow<Resource<ResponseInfo>>
-    suspend fun joinSession(id: Long): Flow<Resource<MapSession>>
-    suspend fun leaveSession(id: Long): Flow<Resource<ResponseInfo>>
-    suspend fun sendMessage( id: Long, message: NewSessionChatMessageDto): Flow<Resource<ResponseInfo>>
-    suspend fun markTask(
+    fun fetchSessions(): Flow<Resource<List<MapSession>>>
+    fun getSession(id: Long): Flow<Resource<MapSession>>
+    fun createSession(dto: ClearMapSessionDto): Flow<Resource<MapSession>>
+    fun updateSession(dto: ClearMapSessionDto, id: Long): Flow<Resource<MapSession>>
+    fun startSession(id: Long): Flow<Resource<ResponseInfo>>
+    fun endSession(id: Long): Flow<Resource<ResponseInfo>>
+    fun joinSession(id: Long): Flow<Resource<MapSession>>
+    fun leaveSession(id: Long): Flow<Resource<ResponseInfo>>
+    fun sendMessage( id: Long, message: NewSessionChatMessageDto): Flow<Resource<ResponseInfo>>
+    fun markTask(
         id: Long,
         taskId: Long,
         state: Boolean
     ): Flow<Resource<MapSession>>
+
+    fun getUserInfo(): Flow<Resource<UserAndSessions>>
 }
