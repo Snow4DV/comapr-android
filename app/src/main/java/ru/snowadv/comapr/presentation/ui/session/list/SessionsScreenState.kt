@@ -1,7 +1,6 @@
-package ru.snowadv.comapr.presentation.screen.session.list
+package ru.snowadv.comapr.presentation.ui.session.list
 
 import ru.snowadv.comapr.domain.model.MapSession
-import ru.snowadv.comapr.domain.model.RoadMap
 
 data class SessionsScreenState(
     val sessions: List<MapSession> = emptyList(),

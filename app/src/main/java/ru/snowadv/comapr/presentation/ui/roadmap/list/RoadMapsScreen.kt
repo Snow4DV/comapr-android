@@ -1,8 +1,7 @@
-package ru.snowadv.comapr.presentation.screen.roadmap.list
+package ru.snowadv.comapr.presentation.ui.roadmap.list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +47,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +58,7 @@ import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.SampleData
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.RoadMap
+import ru.snowadv.comapr.presentation.ui.common.GroupHeader
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapsViewModel
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
@@ -76,7 +75,7 @@ fun RoadMapsScreen(
 
     LaunchedEffect(true) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            roadMapsViewModel.getRoadMaps()
+            roadMapsViewModel.loadDataIfDidntLoadBefore()
         }
     }
 
@@ -160,7 +159,11 @@ fun FilterCategoryAndStatusDialog(
 
             Column(modifier = Modifier.padding(10.dp)) {
 
-                Text(text = stringResource(R.string.filters), fontSize = 25.sp)
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = stringResource(R.string.filters),
+                    fontSize = 25.sp
+                )
 
                 Spacer(modifier = Modifier
                     .height(10.dp)
@@ -170,7 +173,10 @@ fun FilterCategoryAndStatusDialog(
                 LazyColumn(modifier = Modifier
                     .fillMaxWidth()) {
                     item {
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             RadioButton(
                                 selected = selectedCategory.intValue == -1,
                                 onClick = { selectedCategory.intValue = -1 }
@@ -179,7 +185,10 @@ fun FilterCategoryAndStatusDialog(
                         }
                     }
                     itemsIndexed(categories) { index, it ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             RadioButton(
                                 selected = selectedCategory.intValue == index,
                                 onClick = { selectedCategory.intValue = index }
@@ -198,7 +207,10 @@ fun FilterCategoryAndStatusDialog(
                     .fillMaxWidth()) {
 
                     item {
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             RadioButton(
                                 selected = selectedStatus.intValue == -1,
                                 onClick = { selectedStatus.intValue = -1 }
@@ -207,12 +219,15 @@ fun FilterCategoryAndStatusDialog(
                         }
                     }
                     itemsIndexed(statuses) { index, it ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             RadioButton(
                                 selected = selectedStatus.intValue == index,
                                 onClick = { selectedStatus.intValue = index }
                             )
-                            Text(it.name)
+                            Text(stringResource(id = it.textResId))
                         }
                     }
                 }
@@ -222,6 +237,7 @@ fun FilterCategoryAndStatusDialog(
                     .fillMaxWidth())
 
                 Button(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = {
                         onSubmitButtonClick.invoke(
                             selectedStatus.intValue.let { if(it == -1) null else statuses[it].id },
@@ -253,12 +269,12 @@ fun RoadMapsCategorizedList(
     ) {
         categorizedRoadMaps.forEach { categorizedMaps ->
             stickyHeader {
-                RoadMapCategoryHeader(
+                GroupHeader(
                     modifier = Modifier.clickable {
                         categoryToHidden[categorizedMaps.categoryId] =
                             !(categoryToHidden[categorizedMaps.categoryId] ?: true)
                     },
-                    text = categorizedMaps.categoryName
+                    title = categorizedMaps.categoryName
                 )
             }
             items(categorizedMaps.roadMaps) { roadMap ->
@@ -276,21 +292,6 @@ fun RoadMapsCategorizedList(
 }
 
 
-@Composable
-private fun RoadMapCategoryHeader(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = text,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(10.dp)
-    )
-}
 
 @Composable
 fun RoadMapItem(
@@ -373,15 +374,7 @@ fun RoadMapItem(
 
 }
 
-@Preview
-@Composable
-fun CategoryHeaderPreview() {
-    RoadMapCategoryHeader(
-        modifier = Modifier
-            .width(420.dp),
-        text = "Competitive programming"
-    )
-}
+
 
 @Preview
 @Composable

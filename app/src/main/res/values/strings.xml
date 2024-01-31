@@ -11,7 +11,7 @@
     <string name="profile">Profile</string>
     <string name="email_profile">"Email: "</string>
     <string name="id_profile">"ID: "</string>
-    <string name="roles_profile">"Roles: "</string>
+    <string name="role_profile">"Role: "</string>
     <string name="filter">Filter</string>
     <string name="category">Category</string>
     <string name="filters">Filters</string>
@@ -30,4 +30,8 @@
     <string name="joined_users">"Joined users: "</string>
     <string name="starting_at">"Starting at: "</string>
     <string name="with_group_chat">(with group chat)</string>
+    <string name="user">User</string>
+    <string name="administrator">Administrator</string>
+    <string name="moderator">Moderator</string>
+    <string name="undefined">Undefined</string>
 </resources>

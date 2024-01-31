@@ -1,4 +1,4 @@
-package ru.snowadv.comapr.presentation.screen.home
+package ru.snowadv.comapr.presentation.ui.home
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,9 +30,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.snowadv.comapr.R
-import ru.snowadv.comapr.presentation.screen.profile.ProfileScreen
-import ru.snowadv.comapr.presentation.screen.roadmap.list.RoadMapsScreen
-import ru.snowadv.comapr.presentation.screen.session.list.SessionsScreen
+import ru.snowadv.comapr.presentation.ui.profile.ProfileScreen
+import ru.snowadv.comapr.presentation.ui.roadmap.list.RoadMapsScreen
+import ru.snowadv.comapr.presentation.ui.session.list.SessionsScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.ProfileViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapsViewModel
@@ -84,6 +84,7 @@ fun HomeScreen(
                             navController.navigate(item.navRoute) {
                                 popUpTo(navController.graph.startDestinationRoute!!) {
                                     saveState = true
+
                                 }
                                 launchSingleTop = true
                                 restoreState = true
@@ -135,7 +136,8 @@ fun HomeScreen(
             composable("profile") {
                 ProfileScreen(
                     modifier = Modifier.fillMaxSize(),
-                    profileViewModel = profileViewModel
+                    profileViewModel = profileViewModel,
+                    mainViewModel = mainViewModel
                 )
             }
         }

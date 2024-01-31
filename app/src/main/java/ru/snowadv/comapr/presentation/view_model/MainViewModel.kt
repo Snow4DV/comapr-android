@@ -41,10 +41,11 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     private val _user = MutableStateFlow<AuthUser?>(null)
     val user: StateFlow<AuthUser?> = _user.asStateFlow()
-    val authorized = _user.value != null
+    val authorized
+        get() = _user.value != null
 
     private val _loading = mutableStateOf(false)
-    private val loading: State<Boolean> = _loading
+    val loading: State<Boolean> = _loading
 
     private val eventChannel = eventAggregator.eventChannel
     val eventFlow: Flow<UiEvent> = eventChannel.receiveAsFlow()

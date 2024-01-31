@@ -1,4 +1,4 @@
-package ru.snowadv.comapr.presentation.screen.roadmap.single
+package ru.snowadv.comapr.presentation.ui.roadmap.single
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.SampleData
 import ru.snowadv.comapr.core.util.UiEvent
-import ru.snowadv.comapr.presentation.screen.common.RoadMapAndOrSessionScreenContent
+import ru.snowadv.comapr.presentation.ui.common.RoadMapAndOrSessionScreenContent
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapViewModel
 

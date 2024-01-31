@@ -1,8 +1,7 @@
-package ru.snowadv.comapr.presentation.screen.common
+package ru.snowadv.comapr.presentation.ui.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -102,11 +101,11 @@ fun RoadMapAndOrSessionScreenContent(
             if (roadMap != null) {
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     stickyHeader {
-                        NodeHeader(
+                        GroupHeader(
                             modifier = Modifier.clickable {
                                 mapVisibilityState.value = !(mapVisibilityState.value)
                             },
-                            name = roadMap.name
+                            title = roadMap.name
                         )
                     }
                     item {
@@ -179,11 +178,11 @@ fun RoadMapAndOrSessionScreenContent(
 
                     sessionComposable?.let { sessionComposable ->
                         stickyHeader {
-                            NodeHeader(
+                            GroupHeader(
                                 modifier = Modifier.clickable {
                                     sessionComposableVisibilityState.value = !(sessionComposableVisibilityState.value)
                                 },
-                                name = stringResource(R.string.current_session)
+                                title = stringResource(R.string.current_session)
                             )
                         }
                         item {
@@ -195,12 +194,12 @@ fun RoadMapAndOrSessionScreenContent(
 
                     roadMap.nodes.forEach { node ->
                         stickyHeader {
-                            NodeHeader(
+                            GroupHeader(
                                 modifier = Modifier.clickable {
                                     hiddenNodes[node.id] =
                                         !(hiddenNodes[node.id] ?: true)
                                 },
-                                name = node.name,
+                                title = node.name,
                                 description = node.description
                             )
                         }
@@ -279,32 +278,4 @@ fun RoadMapAndOrSessionScreenContent(
 
 
     }
-}
-
-@Composable
-fun NodeHeader(
-    modifier: Modifier = Modifier,
-    name: String,
-    description: String? = null,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(6.dp)
-    ) {
-        Text(
-            text = name,
-            fontSize = 19.sp,
-            fontWeight = FontWeight.Medium
-        )
-        description?.let {
-            Text(
-                text = it,
-                fontSize = 16.sp,
-                maxLines = 2
-            )
-        }
-    }
-
 }

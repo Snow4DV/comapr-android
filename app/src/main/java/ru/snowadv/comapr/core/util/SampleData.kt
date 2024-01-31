@@ -3,6 +3,7 @@ package ru.snowadv.comapr.core.util
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.Node
 import ru.snowadv.comapr.domain.model.RoadMap
+import ru.snowadv.comapr.domain.model.Role
 import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.Task
 import ru.snowadv.comapr.domain.model.User
@@ -68,7 +69,7 @@ object SampleData {
         verificationStatus = RoadMap.VerificationStatus.VERIFIED
     )
 
-    val user = User(1, "testuser", "email@example.com", "ROLE_ADMIN")
+    val user = User(1, "testuser", "email@example.com", Role.ROLE_ADMIN)
 
     val date = LocalDateTime.of(2024, 1, 1, 10, 0 , 0)
 

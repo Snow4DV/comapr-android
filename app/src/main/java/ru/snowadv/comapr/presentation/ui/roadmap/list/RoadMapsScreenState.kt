@@ -1,4 +1,4 @@
-package ru.snowadv.comapr.presentation.screen.roadmap.list
+package ru.snowadv.comapr.presentation.ui.roadmap.list
 
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.RoadMap

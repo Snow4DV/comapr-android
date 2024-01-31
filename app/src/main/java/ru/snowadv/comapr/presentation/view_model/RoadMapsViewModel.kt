@@ -14,7 +14,7 @@ import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.presentation.EventAggregator
-import ru.snowadv.comapr.presentation.screen.roadmap.list.RoadMapsScreenState
+import ru.snowadv.comapr.presentation.ui.roadmap.list.RoadMapsScreenState
 import javax.inject.Inject
 
 
@@ -27,7 +27,7 @@ class RoadMapsViewModel @Inject constructor(
     private val _state: MutableState<RoadMapsScreenState> = mutableStateOf(RoadMapsScreenState(loading = true))
     val state: State<RoadMapsScreenState> = _state
 
-
+    private val loaded = mutableStateOf(false)
 
     fun setStatusIdAndCategoryIdFilters(statusId: Int?, categoryId: Long?) {
         _state.value = _state.value.copy(
@@ -36,8 +36,15 @@ class RoadMapsViewModel @Inject constructor(
         )
         getRoadMaps()
     }
+
+    fun loadDataIfDidntLoadBefore() {
+        if(!loaded.value) {
+            loaded.value = true
+            getRoadMaps()
+        }
+    }
     fun getRoadMaps() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             state.value.apply {
                 dataRepository.fetchMaps(filterStatusId, filterCategoryId).onEach {
                     val data = it.data ?: _state.value.roadMaps

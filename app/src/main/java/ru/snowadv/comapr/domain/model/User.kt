@@ -7,9 +7,9 @@ data class User(
     val id: Long,
     val username: String,
     val email: String,
-    val role: String
+    val role: Role
 ) {
     fun toDto(): UserDto {
-        return UserDto(id, username, email, role)
+        return UserDto(id, username, email, role.name)
     }
 }

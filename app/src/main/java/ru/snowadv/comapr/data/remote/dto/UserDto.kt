@@ -1,5 +1,6 @@
 package ru.snowadv.comapr.data.remote.dto
 
+import ru.snowadv.comapr.domain.model.Role
 import ru.snowadv.comapr.domain.model.User
 
 
@@ -10,6 +11,6 @@ data class UserDto(
     val role: String
 ) {
     fun toModel(): User {
-        return User(id, username, email, role)
+        return User(id, username, email, Role.entries.firstOrNull { it.name == role } ?: Role.UNDEFINED)
     }
 }

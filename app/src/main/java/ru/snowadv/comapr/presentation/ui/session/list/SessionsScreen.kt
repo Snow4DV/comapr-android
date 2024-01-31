@@ -1,4 +1,4 @@
-package ru.snowadv.comapr.presentation.screen.session.list
+package ru.snowadv.comapr.presentation.ui.session.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -16,6 +16,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -30,11 +33,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -59,7 +65,7 @@ fun SessionsScreen(
 
     LaunchedEffect(true) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            sessionsViewModel.getSessions()
+            sessionsViewModel.loadDataIfDidntLoadBefore()
         }
     }
 
@@ -161,14 +167,75 @@ fun SessionItem(
                 )
 
             }
-            Text(text = "${stringResource(R.string.map_sessions_list)}${session.roadMap.name}", fontSize = 18.sp)
-            Text(text = "${stringResource(R.string.joined_users)}${session.users.size}", fontSize = 18.sp)
-            Text(text = "${stringResource(R.string.starting_at)}${session.startDate.format(DateTimeFormatter.ofPattern("yyyy.MM.DD hh:mm"))}", fontSize = 18.sp)
-            session.groupChatUrl?.let { Text(text = stringResource(R.string.with_group_chat), fontSize = 18.sp) }
+            TextWithIcon(
+                text = "${stringResource(R.string.map_sessions_list)}${session.roadMap.name}",
+                fontSize = 18.sp,
+                icon = Icons.Outlined.Place
+            )
+            TextWithIcon(
+                text = "${stringResource(R.string.joined_users)}${session.users.size}",
+                fontSize = 18.sp,
+                icon = ImageVector.vectorResource(R.drawable.people_outlined)
+            )
+            TextWithIcon(
+                text = "${stringResource(R.string.starting_at)}${
+                    session.startDate.format(
+                        DateTimeFormatter.ofPattern("yyyy.MM.DD hh:mm")
+                    )
+                }",
+                fontSize = 18.sp,
+                icon = ImageVector.vectorResource(R.drawable.clock_outlined)
+            )
+            session.groupChatUrl?.let { TextWithIcon(
+                text = stringResource(R.string.with_group_chat),
+                fontSize = 18.sp,
+                icon = ImageVector.vectorResource(R.drawable.chat_outlined)
+            ) }
         }
     }
 
 
+}
+
+
+@Composable
+fun TextWithIcon(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    text: String,
+    contentDescription: String? = null,
+    fontSize: TextUnit,
+    color: Color = MaterialTheme.colorScheme.onSurface
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            modifier = Modifier
+                .height(with(LocalDensity.current) { fontSize.toDp() })
+                .padding(end = 3.dp),
+            tint = color,
+        )
+        Text(
+            text = text,
+            fontSize = fontSize,
+            color = color
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TextWithIconPreview() {
+    TextWithIcon(
+        icon = Icons.Filled.Person,
+        text = "Test user",
+        fontSize = 23.sp,
+        color = MaterialTheme.colorScheme.primary
+    )
 }
 
 

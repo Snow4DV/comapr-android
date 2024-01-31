@@ -14,8 +14,7 @@ import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.presentation.EventAggregator
-import ru.snowadv.comapr.presentation.screen.roadmap.list.RoadMapsScreenState
-import ru.snowadv.comapr.presentation.screen.roadmap.single.RoadMapScreenState
+import ru.snowadv.comapr.presentation.ui.roadmap.single.RoadMapScreenState
 import javax.inject.Inject
 
 
@@ -29,7 +28,7 @@ class RoadMapViewModel @Inject constructor(
     val state: State<RoadMapScreenState> = _state
 
     fun getRoadMap(id: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             state.value.apply {
                 dataRepository.fetchRoadMap(id).onEach {
                     val data = it.data ?: _state.value.roadMap

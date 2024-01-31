@@ -48,7 +48,7 @@ class SessionRepositoryImpl(
         } catch (e: HttpException) {
             return if (e.code() == 401) {
                 dao.removeUserData()
-                Resource.Error("Wrong login or password")
+                Resource.Error(if (requestOrUserData is  UserData) "Your session is outdated. Authorize again." else "Wrong login or password")
             } else {
                 Resource.Error(e.response().toString())
             }
