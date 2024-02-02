@@ -73,21 +73,9 @@ fun RoadMapAndOrSessionScreenContent(
     Scaffold(
         modifier = modifier,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(roadMap?.name ?: stringResource(R.string.loading)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { onBackClicked() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            contentDescription = "back"
-                        )
-                    }
-                },
+            SimpleTopBarWithBackButton(
+                title = roadMap?.name ?: stringResource(R.string.loading),
+                onBackClicked = onBackClicked
             )
         }
     ) { paddingValues ->

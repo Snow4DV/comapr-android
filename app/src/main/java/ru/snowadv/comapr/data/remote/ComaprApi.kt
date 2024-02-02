@@ -4,6 +4,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.snowadv.comapr.data.remote.dto.CategoryDto
@@ -16,6 +17,7 @@ import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMapsDto
+import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 
 interface ComaprApi {
@@ -45,13 +47,16 @@ interface ComaprApi {
     @GET("/api/v1/roadmap/list")
     suspend fun fetchMaps(@Query("statusId") statusId: Int?, @Query("categoryId") categoryId: Long?): List<CategorizedRoadMapsDto>
 
-    @POST("/api/v1/roadmap/vote")
+    @GET("/api/v1/roadmap/namesList")
+    suspend fun fetchMapsNames(@Query("statusId") statusId: Int?, @Query("categoryId") categoryId: Long?): List<SimpleRoadMapDto>
+
+    @PUT("/api/v1/roadmap/vote")
     suspend fun voteForRoadMap(@Query("id") id: Long, @Query("like") like: Boolean): ResponseInfoDto
 
-    @POST("/api/v1/roadmap/changeStatus")
+    @PUT("/api/v1/roadmap/changeStatus")
     suspend fun changeVerificationStatus(@Query("id") id: Long, @Query("statusId") statusId: Int): RoadMapDto
 
-    @POST("/api/v1/roadmap/update")
+    @PUT("/api/v1/roadmap/update")
     suspend fun updateRoadMap(@Body dto: RoadMapDto): RoadMapDto
 
     @POST("/api/v1/roadmap/create")

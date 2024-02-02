@@ -12,15 +12,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
+import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.ui.profile.ProfileScreenState
-import ru.snowadv.comapr.presentation.use_case.GetUserProfileUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val eventAggregator: EventAggregator,
-    private val getProfileUseCase: GetUserProfileUseCase
+    private val dataRepository: DataRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(ProfileScreenState(loading = true))
@@ -36,7 +36,7 @@ class ProfileViewModel @Inject constructor(
     }
     fun getProfile() {
         viewModelScope.launch(Dispatchers.IO) {
-            getProfileUseCase().onEach {profileResponse ->
+            dataRepository.getUserInfo().onEach {profileResponse ->
                 when (profileResponse) {
                     is Resource.Error -> {
                         withContext(Dispatchers.Main) {

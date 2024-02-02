@@ -16,8 +16,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -33,14 +31,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -49,11 +45,12 @@ import ru.snowadv.comapr.R
 import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.SampleData
 import ru.snowadv.comapr.domain.model.MapSession
+import ru.snowadv.comapr.presentation.ui.common.TextWithIcon
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.SessionsViewModel
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun SessionsScreen(
     modifier: Modifier = Modifier,
@@ -69,16 +66,32 @@ fun SessionsScreen(
         }
     }
 
-    val state = sessionsViewModel.state
+    SessionsScreenContent(
+        modifier = modifier,
+        state = sessionsViewModel.state.value,
+        onRefresh = {sessionsViewModel.getSessions()},
+        onClickSession = {mainViewModel.navigate(NavigationEvent.ToSession(it.id))},
+        onCreateSession = {mainViewModel.navigate(NavigationEvent.ToSessionEditor())}
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SessionsScreenContent(
+    modifier: Modifier = Modifier,
+    state: SessionsScreenState,
+    onRefresh: () -> Unit,
+    onClickSession: (MapSession) -> Unit,
+    onCreateSession: () -> Unit
+) {
+
     val pullRefreshState =
-        rememberPullRefreshState(state.value.loading, { sessionsViewModel.getSessions() })
+        rememberPullRefreshState(state.loading, onRefresh)
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    // TODO: navigate to create session screen
-                },
+                onClick = onCreateSession,
             ) {
                 Icon(Icons.Filled.Add, "Create session")
             }
@@ -94,21 +107,17 @@ fun SessionsScreen(
             ) {
             SessionsList(
                 modifier = Modifier.fillMaxSize(),
-                sessions = state.value.sessions,
-                onClickSession = {
-                    mainViewModel.navigate(NavigationEvent.ToSession(it.id))
-                }
+                sessions = state.sessions,
+                onClickSession = onClickSession
             )
 
             PullRefreshIndicator(
-                refreshing = state.value.loading,
+                refreshing = state.loading,
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }
-
-
 }
 
 
@@ -198,34 +207,6 @@ fun SessionItem(
 }
 
 
-@Composable
-fun TextWithIcon(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    text: String,
-    contentDescription: String? = null,
-    fontSize: TextUnit,
-    color: Color = MaterialTheme.colorScheme.onSurface
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-            modifier = Modifier
-                .height(with(LocalDensity.current) { fontSize.toDp() })
-                .padding(end = 3.dp),
-            tint = color,
-        )
-        Text(
-            text = text,
-            fontSize = fontSize,
-            color = color
-        )
-    }
-}
 
 @Preview
 @Composable

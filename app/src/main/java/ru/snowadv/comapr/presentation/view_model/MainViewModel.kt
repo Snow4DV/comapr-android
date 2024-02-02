@@ -25,17 +25,13 @@ import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.domain.model.AuthUser
+import ru.snowadv.comapr.domain.repository.SessionRepository
 import ru.snowadv.comapr.presentation.EventAggregator
-import ru.snowadv.comapr.presentation.use_case.AuthenticateUseCase
-import ru.snowadv.comapr.presentation.use_case.SignInUseCase
-import ru.snowadv.comapr.presentation.use_case.SignUpUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val authenticateCase: AuthenticateUseCase,
-    private val signInCase: SignInUseCase,
-    private val signUpCase: SignUpUseCase,
+    private val sessionRepository: SessionRepository,
     private val authenticator: ApiAuthenticator,
     private val eventAggregator: EventAggregator
 ) : ViewModel() {
@@ -51,7 +47,7 @@ class MainViewModel @Inject constructor(
     val eventFlow: Flow<UiEvent> = eventChannel.receiveAsFlow()
 
 
-    private val navigationChannel = Channel<NavigationEvent>()
+    private val navigationChannel = eventAggregator.navigationChannel
     val navigationFlow: Flow<NavigationEvent> = navigationChannel.receiveAsFlow()
 
     init {
@@ -62,7 +58,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             user.onEach {
                 it?.let {
-                    navigationChannel.send(NavigationEvent.ToHomeScreen())
+                    navigationChannel.send(NavigationEvent.ToHomeScreen)
                 } /*?: run {
                     navigationChannel.send(NavigationEvent.ToLoginScreen())
                 }*/
@@ -86,7 +82,7 @@ class MainViewModel @Inject constructor(
         _loading.value = true
         var result: Resource<AuthUser>
         withContext(Dispatchers.IO) {
-            result = authenticateCase()
+            result = sessionRepository.authenticate()
         }
         updateAuthUser(result)
 
@@ -96,7 +92,7 @@ class MainViewModel @Inject constructor(
         Log.e(TAG, "signIn: with $username $password")
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
-            updateAuthUser(signInCase(username, password))
+            updateAuthUser(sessionRepository.signIn(username, password))
         }
     }
 
@@ -104,7 +100,7 @@ class MainViewModel @Inject constructor(
         Log.d(TAG, "signOut: with $username $password $email")
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
-            updateAuthUser(signUpCase(email, username, password))
+            updateAuthUser(sessionRepository.signUp(email, username, password))
         }
     }
 
@@ -114,7 +110,7 @@ class MainViewModel @Inject constructor(
             is Resource.Error -> {
                 eventChannel.send(UiEvent.ShowSnackbar(resource.message ?: "Unknown error"))
                 _loading.value = false
-                navigationChannel.send(NavigationEvent.ToLoginScreen())
+                navigationChannel.send(NavigationEvent.ToLoginScreen)
                 // go to login screen on auth fail otherwise observers won't be notified with
                 // another null value
             }

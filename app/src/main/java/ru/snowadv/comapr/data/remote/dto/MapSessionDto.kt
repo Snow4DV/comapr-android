@@ -1,5 +1,6 @@
 package ru.snowadv.comapr.data.remote.dto
 
+import ru.snowadv.comapr.core.util.toZonedDateTimeWithCurrentZone
 import ru.snowadv.comapr.domain.model.MapSession
 import java.time.LocalDateTime
 
@@ -20,7 +21,7 @@ data class MapSessionDto(
             creator.toModel(),
             users.map { it.toModel() },
             public,
-            startDate,
+            startDate.toZonedDateTimeWithCurrentZone(),
             MapSession.State.getById(stateId),
             groupChatUrl,
             messages.map { it.toModel() },

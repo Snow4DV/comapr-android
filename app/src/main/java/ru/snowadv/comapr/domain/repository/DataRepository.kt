@@ -18,17 +18,30 @@ import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
+import ru.snowadv.comapr.domain.model.RoadMapItem
 import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
+import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 interface DataRepository {
     fun getCategories(): Flow<Resource<List<Category>>>
-    fun getCategory( id: Long): Flow<Resource<Category>>
+    fun getCategory(id: Long): Flow<Resource<Category>>
     fun createCategory(dto: CategoryDto): Flow<Resource<Category>>
 
     fun fetchRoadMap(id: Long): Flow<Resource<RoadMap>>
-    fun fetchMaps(statusId: Int? = null, categoryId: Long? = null): Flow<Resource<List<CategorizedRoadMaps>>>
+    fun fetchMaps(
+        statusId: Int? = null,
+        categoryId: Long? = null
+    ): Flow<Resource<List<CategorizedRoadMaps>>>
+
+    fun fetchMapsNames(
+        statusId: Int? = null,
+        categoryId: Long? = null
+    ): Flow<Resource<List<RoadMapItem>>>
+
     fun voteForRoadMap(id: Long, like: Boolean): Flow<Resource<ResponseInfo>>
     fun changeVerificationStatus(id: Long, statusId: Int): Flow<Resource<RoadMap>>
     fun updateRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
@@ -37,13 +50,26 @@ interface DataRepository {
 
     fun fetchSessions(): Flow<Resource<List<MapSession>>>
     fun getSession(id: Long): Flow<Resource<MapSession>>
-    fun createSession(dto: ClearMapSessionDto): Flow<Resource<MapSession>>
-    fun updateSession(dto: ClearMapSessionDto, id: Long): Flow<Resource<MapSession>>
+    fun createSession(
+        public: Boolean,
+        startDate: ZonedDateTime,
+        groupChatUrl: String?,
+        roadMapId: Long
+    ): Flow<Resource<MapSession>>
+
+    fun updateSession(
+        public: Boolean,
+        startDate: ZonedDateTime,
+        groupChatUrl: String?,
+        roadMapId: Long,
+        id: Long
+    ): Flow<Resource<MapSession>>
+
     fun startSession(id: Long): Flow<Resource<ResponseInfo>>
     fun endSession(id: Long): Flow<Resource<ResponseInfo>>
     fun joinSession(id: Long): Flow<Resource<MapSession>>
     fun leaveSession(id: Long): Flow<Resource<ResponseInfo>>
-    fun sendMessage( id: Long, message: NewSessionChatMessageDto): Flow<Resource<ResponseInfo>>
+    fun sendMessage(id: Long, message: NewSessionChatMessageDto): Flow<Resource<ResponseInfo>>
     fun markTask(
         id: Long,
         taskId: Long,

@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.safeApiCall
+import ru.snowadv.comapr.core.util.toUtcLocalDateTime
 import ru.snowadv.comapr.data.remote.ComaprApi
 import ru.snowadv.comapr.data.remote.dto.CategoryDto
 import ru.snowadv.comapr.data.remote.dto.ClearMapSessionDto
@@ -13,9 +14,13 @@ import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
+import ru.snowadv.comapr.domain.model.RoadMapItem
 import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
+import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class DataRepositoryImpl(
     private val api: ComaprApi
@@ -62,6 +67,18 @@ class DataRepositoryImpl(
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.fetchMaps(statusId, categoryId).map { it.toModel() }))
+        }, onException = {
+            emit(Resource.Error(it))
+        })
+    }
+
+    override fun fetchMapsNames(
+        statusId: Int?,
+        categoryId: Long?
+    ): Flow<Resource<List<RoadMapItem>>> = flow {
+        emit(Resource.Loading())
+        safeApiCall(block = {
+            emit(Resource.Success(api.fetchMapsNames(statusId, categoryId).map { it.toModel() }))
         }, onException = {
             emit(Resource.Error(it))
         })
@@ -127,8 +144,12 @@ class DataRepositoryImpl(
     }
 
     override fun createSession(
-        dto: ClearMapSessionDto
+        public: Boolean,
+        startDate: ZonedDateTime,
+        groupChatUrl: String?,
+        roadMapId: Long
     ): Flow<Resource<MapSession>> = flow {
+        val dto = ClearMapSessionDto(public, startDate.toUtcLocalDateTime(), groupChatUrl, roadMapId)
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.createSession(dto).toModel()))
@@ -138,8 +159,13 @@ class DataRepositoryImpl(
     }
 
     override fun updateSession(
-        dto: ClearMapSessionDto, id: Long
+        public: Boolean,
+        startDate: ZonedDateTime,
+        groupChatUrl: String?,
+        roadMapId: Long,
+        id: Long
     ): Flow<Resource<MapSession>> = flow {
+        val dto = ClearMapSessionDto(public, startDate.toUtcLocalDateTime(), groupChatUrl, roadMapId)
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.updateSession(dto, id).toModel()))

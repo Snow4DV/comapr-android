@@ -1,5 +1,6 @@
 package ru.snowadv.comapr.data.remote.dto
 
+import ru.snowadv.comapr.core.util.toZonedDateTimeWithCurrentZone
 import ru.snowadv.comapr.domain.model.ClearMapSession
 import java.time.LocalDateTime
 
@@ -10,6 +11,6 @@ data class ClearMapSessionDto(
     val roadMapId: Long
 ) {
     fun toModel(): ClearMapSession {
-        return ClearMapSession(public, startDate, groupChatUrl, roadMapId)
+        return ClearMapSession(public, startDate.toZonedDateTimeWithCurrentZone(), groupChatUrl, roadMapId)
     }
 }

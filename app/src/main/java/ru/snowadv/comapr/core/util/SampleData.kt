@@ -9,6 +9,7 @@ import ru.snowadv.comapr.domain.model.Task
 import ru.snowadv.comapr.domain.model.User
 import ru.snowadv.comapr.domain.model.UserMapCompletionState
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 object SampleData {
     val roadMap = RoadMap(
@@ -71,7 +72,7 @@ object SampleData {
 
     val user = User(1, "testuser", "email@example.com", Role.ROLE_ADMIN)
 
-    val date = LocalDateTime.of(2024, 1, 1, 10, 0 , 0)
+    val date = ZonedDateTime.now()
 
     val messages = listOf(SessionChatMessage(1, user, date, "hi!"), SessionChatMessage(1, user, date, "how are you?"))
 

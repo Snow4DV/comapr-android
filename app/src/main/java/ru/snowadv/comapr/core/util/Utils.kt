@@ -10,6 +10,12 @@ import retrofit2.HttpException
 import ru.snowadv.comapr.R
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.RoadMap
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.util.TimeZone
 
 
 suspend fun <T> FlowCollector<T>.safeApiCall(
@@ -25,6 +31,20 @@ suspend fun <T> FlowCollector<T>.safeApiCall(
     }
 }
 
+fun LocalDateTime.toZonedDateTimeWithCurrentZone(): ZonedDateTime {
+    return this.atZone(getCurrentZoneId())
+}
+
+fun getCurrentZoneId(): ZoneId {
+    return TimeZone.getDefault().toZoneId()
+}
+fun ZonedDateTime.toUtcLocalDateTime(): LocalDateTime {
+    return this.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime()
+}
+
+fun millisToZonedDateTime(millis: Long): ZonedDateTime {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(millis), getCurrentZoneId())
+}
 @Composable
 fun Category.toDisplayName(): String {
     return when(this.name) {

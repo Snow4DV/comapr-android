@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -37,6 +38,7 @@ import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.presentation.ui.login.LoginScreen
 import ru.snowadv.comapr.presentation.ui.home.HomeScreen
 import ru.snowadv.comapr.presentation.ui.roadmap.single.RoadMapScreen
+import ru.snowadv.comapr.presentation.ui.session.modify.CreateEditSessionScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapViewModel
 import ru.snowadv.comapr.ui.theme.ComaprTheme
@@ -69,11 +71,14 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(navEvent.route) {
                                     popUpTo(navEvent.route) {
                                         inclusive = true
-                                        saveState = true
                                     }
                                 }
                                 navController.graph.setStartDestination(navEvent.route)
-                                Log.d(TAG, "navigating to ${navEvent.route}, backstack: ${navController.backQueue.map { it.destination }}")
+                            }
+                            is NavigationEvent.BackToHomeScreen -> {
+                                navController.navigate(navEvent.route) {
+                                    popUpTo(navEvent.route)
+                                }
                             }
                             else -> {
                                 navController.navigate(navEvent.route)
@@ -124,8 +129,6 @@ class MainActivity : ComponentActivity() {
                                 })
                             ) { navBackStackEntry ->
                                 val roadmapId = navBackStackEntry.arguments?.getLong("roadmapId")
-                                // by some reason getLong returns 0 here but string casted to long works correctly. Why?
-                                // TODO: fix
                                 val roadMapViewModel: RoadMapViewModel = hiltViewModel()
 
                                 roadmapId?.let {
@@ -136,6 +139,21 @@ class MainActivity : ComponentActivity() {
                                         roadMapId = it
                                     )
                                 } ?: error("Id wasn't passed as roadmap nav argument!")
+                            }
+
+
+                            composable(
+                                "sessionEditor?sessionId={sessionId}",
+                                arguments = listOf(navArgument("sessionId") {
+                                    type = NavType.StringType
+                                    defaultValue = null
+                                    nullable = true
+                                })
+                            ) {
+                                CreateEditSessionScreen(
+                                    modifier = Modifier.fillMaxSize(),
+                                    mainViewModel = mainViewModel
+                                )
                             }
                         }
                     }

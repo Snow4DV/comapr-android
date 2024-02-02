@@ -34,4 +34,12 @@
     <string name="administrator">Administrator</string>
     <string name="moderator">Moderator</string>
     <string name="undefined">Undefined</string>
+    <string name="group_chat_url">Group chat URL</string>
+    <string name="make_session_public">Make session public</string>
+    <string name="select_session_s_start_time">Select session\'s start time</string>
+    <string name="select_road_map">Select road map</string>
+    <string name="not_selected">Not selected</string>
+    <string name="new_session">New session</string>
+    <string name="edit_session">Edit session</string>
+    <string name="couldn_t_load_roadmaps">Couldn\'t load roadmaps</string>
 </resources>

@@ -26,10 +26,6 @@ import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.domain.repository.SessionRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.EventAggregatorImpl
-import ru.snowadv.comapr.presentation.use_case.AuthenticateUseCase
-import ru.snowadv.comapr.presentation.use_case.GetUserProfileUseCase
-import ru.snowadv.comapr.presentation.use_case.SignInUseCase
-import ru.snowadv.comapr.presentation.use_case.SignUpUseCase
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
@@ -127,31 +123,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthUseCase(sessionRepo: SessionRepository): AuthenticateUseCase {
-        return AuthenticateUseCase(sessionRepo)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSignInUseCase(sessionRepo: SessionRepository): SignInUseCase {
-        return SignInUseCase(sessionRepo)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSignUpUseCase(sessionRepo: SessionRepository): SignUpUseCase {
-        return SignUpUseCase(sessionRepo)
-    }
-
-    @Provides
-    @Singleton
     fun provideEventAggregator(): EventAggregator {
         return EventAggregatorImpl()
     }
 
-    @Provides
-    @Singleton
-    fun provideGetUserProfileUseCase(dataRepo: DataRepository): GetUserProfileUseCase {
-        return GetUserProfileUseCase(dataRepo)
-    }
 }
