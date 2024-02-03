@@ -57,6 +57,7 @@ import ru.snowadv.comapr.R
 import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.SampleData
 import ru.snowadv.comapr.domain.model.Category
+import ru.snowadv.comapr.domain.model.Node
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.presentation.ui.common.GroupHeader
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
@@ -109,6 +110,9 @@ fun RoadMapsScreen(
                 categorizedRoadMaps = state.value.roadMaps,
                 onClickRoadMap = {
                     mainViewModel.navigate(NavigationEvent.ToRoadMap(it.id))
+                },
+                onClickNode = { node, roadMap ->
+                    mainViewModel.navigate(NavigationEvent.ToRoadMap(roadMap.id, node.id))
                 }
             )
 
@@ -260,9 +264,9 @@ fun FilterCategoryAndStatusDialog(
 fun RoadMapsCategorizedList(
     modifier: Modifier = Modifier,
     categorizedRoadMaps: List<CategorizedRoadMaps>,
-    onClickRoadMap: (RoadMap) -> Unit
+    onClickRoadMap: (RoadMap) -> Unit,
+    onClickNode: (Node, RoadMap) -> Unit
 ) {
-
     val categoryToHidden = remember { mutableStateMapOf<Long, Boolean>() }
     LazyColumn(
         modifier = modifier
@@ -281,7 +285,8 @@ fun RoadMapsCategorizedList(
                 AnimatedVisibility(visible = categoryToHidden[categorizedMaps.categoryId] ?: true) {
                     RoadMapItem(
                         roadMap = roadMap,
-                        onClickRoadMap = onClickRoadMap
+                        onClickRoadMap = onClickRoadMap,
+                        onClickNode = onClickNode
                     )
                 }
 
@@ -297,7 +302,8 @@ fun RoadMapsCategorizedList(
 fun RoadMapItem(
     modifier: Modifier = Modifier,
     roadMap: RoadMap,
-    onClickRoadMap: (RoadMap) -> Unit
+    onClickRoadMap: (RoadMap) -> Unit,
+    onClickNode: (Node, RoadMap) -> Unit
 ) {
     ElevatedCard(
         modifier = modifier
@@ -333,7 +339,9 @@ fun RoadMapItem(
                 items(roadMap.nodes) { node ->
                     AssistChip(
                         modifier = Modifier.padding(horizontal = 6.dp),
-                        onClick = {},
+                        onClick = {
+                            onClickNode(node, roadMap)
+                        },
                         label = { Text(node.name) }
                     )
                 }
@@ -384,6 +392,7 @@ fun RoadMapItemPreview() {
             .width(420.dp),
         roadMap = SampleData.roadMap,
         onClickRoadMap = { },
+        onClickNode = { _,_ ->}
     )
 }
 

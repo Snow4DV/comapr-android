@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import ru.snowadv.comapr.core.util.NavigationEvent
@@ -21,16 +22,15 @@ import ru.snowadv.comapr.presentation.view_model.RoadMapViewModel
 @Composable
 fun RoadMapScreen(
     modifier: Modifier = Modifier,
-    roadMapViewModel: RoadMapViewModel,
-    mainViewModel: MainViewModel,
-    roadMapId: Long
+    roadMapViewModel: RoadMapViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel
 ) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(true) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            roadMapViewModel.getRoadMap(roadMapId)
+            roadMapViewModel.getRoadMap()
         }
     }
 
@@ -40,13 +40,14 @@ fun RoadMapScreen(
         onBackClicked = { mainViewModel.navigate(NavigationEvent.BackToHomeScreen) },
         roadMap = roadMapViewModel.state.value.roadMap,
         loading = roadMapViewModel.state.value.loading,
-        onRefresh = { roadMapViewModel.getRoadMap(roadMapId) },
+        onRefresh = { roadMapViewModel.getRoadMap() },
         onUrlClick = {
             mainViewModel.sendUiEvent(UiEvent.OpenLink(it))
         },
         onCreateSession = {
             mainViewModel.navigate(NavigationEvent.ToSessionEditor(roadMapId = roadMapViewModel.state.value.roadMap?.id))
-        }
+        },
+        scrollToNodeId = roadMapViewModel.state.value.scrollToNodeId
     )
 
 }

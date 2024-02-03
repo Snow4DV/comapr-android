@@ -3,6 +3,7 @@ package ru.snowadv.comapr.presentation.view_model
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,16 +22,20 @@ import javax.inject.Inject
 @HiltViewModel
 class RoadMapViewModel @Inject constructor(
     private val dataRepository: DataRepository,
-    private val eventAggregator: EventAggregator
+    private val eventAggregator: EventAggregator,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _state: MutableState<RoadMapScreenState> = mutableStateOf(RoadMapScreenState(loading = true))
+    private val nodeId = savedStateHandle.get<String?>("nodeId")?.toLongOrNull()
+    private val roadmapId = savedStateHandle.get<Long>("roadmapId") ?: error("Missing roadmap id")
+
+    private val _state: MutableState<RoadMapScreenState> = mutableStateOf(RoadMapScreenState(loading = true, scrollToNodeId = nodeId))
     val state: State<RoadMapScreenState> = _state
 
-    fun getRoadMap(id: Long) {
+    fun getRoadMap() {
         viewModelScope.launch(Dispatchers.IO) {
             state.value.apply {
-                dataRepository.fetchRoadMap(id).onEach {
+                dataRepository.fetchRoadMap(roadmapId).onEach {
                     val data = it.data ?: _state.value.roadMap
                     when(it) {
                         is Resource.Loading -> {

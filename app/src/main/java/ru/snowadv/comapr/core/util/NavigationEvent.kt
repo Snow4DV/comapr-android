@@ -5,8 +5,13 @@ sealed class NavigationEvent(val route: String, val popUpToStart: Boolean = fals
     data object BackToHomeScreen : NavigationEvent("home")
     data object ToLoginScreen : NavigationEvent("login")
 
-    class ToRoadMap(mapId: Long, popUpToStart: Boolean = false) :
-        NavigationEvent("roadmap/$mapId", popUpToStart)
+    class ToRoadMap(mapId: Long, nodeId: Long? = null, popUpToStart: Boolean = false) :
+        NavigationEvent(getUrlPath(
+            "roadmap",
+            listOfNotNull(
+                mapId.toString().let { "roadmapId" to it },
+                nodeId?.toString()?.let { "nodeId" to it }
+            )), popUpToStart)
 
     class ToSession(sessionId: Long, popUpToStart: Boolean = false) :
         NavigationEvent("session/$sessionId", popUpToStart)

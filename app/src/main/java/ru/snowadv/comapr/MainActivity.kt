@@ -127,22 +127,23 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(
-                                "roadmap/{roadmapId}",
-                                arguments = listOf(navArgument("roadmapId") {
+                                "roadmap?roadmapId={roadmapId}&nodeId={nodeId}",
+                                arguments = listOf(
+                                    navArgument("roadmapId") {
                                     type = NavType.LongType
-                                })
+                                    },
+                                    navArgument("nodeId") {
+                                        type = NavType.StringType
+                                        defaultValue = null
+                                        nullable = true
+                                    },
+                                )
                             ) { navBackStackEntry ->
-                                val roadmapId = navBackStackEntry.arguments?.getLong("roadmapId")
-                                val roadMapViewModel: RoadMapViewModel = hiltViewModel()
 
-                                roadmapId?.let {
-                                    RoadMapScreen(
-                                        modifier = Modifier.fillMaxSize(),
-                                        roadMapViewModel = roadMapViewModel,
-                                        mainViewModel = mainViewModel,
-                                        roadMapId = it
-                                    )
-                                } ?: error("Id wasn't passed as roadmap nav argument!")
+                                RoadMapScreen(
+                                    modifier = Modifier.fillMaxSize(),
+                                    mainViewModel = mainViewModel
+                                )
                             }
 
 

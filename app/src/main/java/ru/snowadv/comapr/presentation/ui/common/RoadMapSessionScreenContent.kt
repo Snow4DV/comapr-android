@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -32,9 +33,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -44,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import ru.snowadv.comapr.R
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.domain.model.Task
@@ -64,8 +68,11 @@ fun RoadMapAndOrSessionScreenContent(
     sessionComposable: @Composable (() -> Unit)? = null,
     onTaskChecked: ((Task) -> Unit)? = null,
     taskStates: Set<Long> = emptySet(),
-    onCreateSession: () -> Unit
+    onCreateSession: () -> Unit,
+    scrollToNodeId: Long? = null
 ) {
+    val lazyListState = rememberLazyListState()
+
     val pullRefreshState =
         rememberPullRefreshState(loading, { onRefresh() })
 
@@ -73,6 +80,25 @@ fun RoadMapAndOrSessionScreenContent(
 
     val mapVisibilityState = remember { mutableStateOf(true) }
     val sessionComposableVisibilityState = remember { mutableStateOf(true) }
+    
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(scrollToNodeId, roadMap) {
+        scrollToNodeId?.let { nodeId ->
+            coroutineScope.launch {
+                var flag = true
+                roadMap?.nodes?.filter {
+                    if (it.id == nodeId) {
+                        flag = false
+                    }
+                    flag
+                }?.sumOf { it.tasks.size }?.let { sum ->
+                    lazyListState.animateScrollToItem(sum + 2)
+                }
+
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -91,7 +117,9 @@ fun RoadMapAndOrSessionScreenContent(
         ) {
 
             if (roadMap != null) {
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                LazyColumn(
+                    state = lazyListState,
+                    modifier = Modifier.fillMaxWidth()) {
                     stickyHeader {
                         GroupHeader(
                             modifier = Modifier.clickable {

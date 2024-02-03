@@ -4,5 +4,6 @@ import ru.snowadv.comapr.domain.model.RoadMap
 
 data class RoadMapScreenState(
     val roadMap: RoadMap? = null,
-    val loading: Boolean = true
+    val loading: Boolean = true,
+    val scrollToNodeId: Long? = null
 )
