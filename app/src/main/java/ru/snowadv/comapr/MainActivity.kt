@@ -39,6 +39,7 @@ import ru.snowadv.comapr.presentation.ui.login.LoginScreen
 import ru.snowadv.comapr.presentation.ui.home.HomeScreen
 import ru.snowadv.comapr.presentation.ui.roadmap.single.RoadMapScreen
 import ru.snowadv.comapr.presentation.ui.session.modify.CreateEditSessionScreen
+import ru.snowadv.comapr.presentation.ui.session.single.SessionScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapViewModel
 import ru.snowadv.comapr.ui.theme.ComaprTheme
@@ -163,6 +164,21 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) {
                                 CreateEditSessionScreen(
+                                    modifier = Modifier.fillMaxSize(),
+                                    mainViewModel = mainViewModel
+                                )
+                            }
+
+
+                            composable(
+                                "session/{sessionId}",
+                                arguments = listOf(
+                                    navArgument("sessionId") {
+                                        type = NavType.LongType
+                                    }
+                                )
+                            ) {
+                                SessionScreen(
                                     modifier = Modifier.fillMaxSize(),
                                     mainViewModel = mainViewModel
                                 )

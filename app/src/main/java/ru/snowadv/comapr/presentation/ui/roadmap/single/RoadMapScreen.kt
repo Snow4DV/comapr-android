@@ -14,7 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.SampleData
 import ru.snowadv.comapr.core.util.UiEvent
-import ru.snowadv.comapr.presentation.ui.common.RoadMapAndOrSessionScreenContent
+import ru.snowadv.comapr.presentation.ui.roadmap.common.RoadMapAndOrSessionScreenContent
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapViewModel
 

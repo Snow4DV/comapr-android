@@ -15,6 +15,7 @@ import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.domain.model.RoadMapItem
+import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
@@ -174,7 +175,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override fun startSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
+    override fun startSession(id: Long): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.startSession(id).toModel()))
@@ -183,7 +184,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override fun endSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
+    override fun endSession(id: Long): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.endSession(id).toModel()))
@@ -201,7 +202,7 @@ class DataRepositoryImpl(
         })
     }
 
-    override fun leaveSession(id: Long): Flow<Resource<ResponseInfo>> = flow {
+    override fun leaveSession(id: Long): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
             emit(Resource.Success(api.leaveSession(id).toModel()))
@@ -212,10 +213,10 @@ class DataRepositoryImpl(
 
     override fun sendMessage(
         id: Long, message: NewSessionChatMessageDto
-    ): Flow<Resource<ResponseInfo>> = flow {
+    ): Flow<Resource<List<SessionChatMessage>>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
-            emit(Resource.Success(api.sendMessage(id, message).toModel()))
+            emit(Resource.Success(api.sendMessage(id, message).map { it.toModel() }))
         }, onException = {
             emit(Resource.Error(it))
         })

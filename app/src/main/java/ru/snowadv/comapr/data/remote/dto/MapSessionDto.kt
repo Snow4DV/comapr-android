@@ -13,7 +13,10 @@ data class MapSessionDto(
     val stateId: Int,
     val groupChatUrl: String?,
     val messages: List<SessionChatMessageDto>,
-    val roadMap: RoadMapDto
+    val roadMap: RoadMapDto,
+    val joined: Boolean = false,
+    val isCreator: Boolean = false,
+    val finishedTasksIds: List<Long> = emptyList()
 ) {
     fun toModel(): MapSession {
         return MapSession(
@@ -25,7 +28,10 @@ data class MapSessionDto(
             MapSession.State.getById(stateId),
             groupChatUrl,
             messages.map { it.toModel() },
-            roadMap.toModel()
+            roadMap.toModel(),
+            joined,
+            isCreator,
+            finishedTasksIds
         )
     }
 }

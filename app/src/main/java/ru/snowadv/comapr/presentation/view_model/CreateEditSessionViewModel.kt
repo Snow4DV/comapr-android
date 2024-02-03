@@ -86,7 +86,7 @@ class CreateEditSessionViewModel @Inject constructor(
                             loading = false,
                         )
                         resource.data?.let {data ->
-                            eventAggregator.navigationChannel.send(NavigationEvent.ToSession(data.id))
+                            eventAggregator.navigationChannel.send(NavigationEvent.ToSession(data.id, true))
                         }
                     }
                 }

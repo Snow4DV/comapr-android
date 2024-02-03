@@ -1,4 +1,4 @@
-package ru.snowadv.comapr.presentation.ui.common
+package ru.snowadv.comapr.presentation.ui.roadmap.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -16,22 +16,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
@@ -51,6 +46,8 @@ import kotlinx.coroutines.launch
 import ru.snowadv.comapr.R
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.domain.model.Task
+import ru.snowadv.comapr.presentation.ui.common.GroupHeader
+import ru.snowadv.comapr.presentation.ui.common.SimpleTopBarWithBackButton
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
@@ -66,9 +63,11 @@ fun RoadMapAndOrSessionScreenContent(
     roadMap: RoadMap?,
     loading: Boolean,
     sessionComposable: @Composable (() -> Unit)? = null,
-    onTaskChecked: ((Task) -> Unit)? = null,
+    usersComposable: @Composable (() -> Unit)? = null,
+    messagesComposable: @Composable (() -> Unit)? = null,
+    onTaskChecked: ((Task, Boolean) -> Unit)? = null,
     taskStates: Set<Long> = emptySet(),
-    onCreateSession: () -> Unit,
+    onCreateSession: () -> Unit = {},
     scrollToNodeId: Long? = null
 ) {
     val lazyListState = rememberLazyListState()
@@ -80,6 +79,8 @@ fun RoadMapAndOrSessionScreenContent(
 
     val mapVisibilityState = remember { mutableStateOf(true) }
     val sessionComposableVisibilityState = remember { mutableStateOf(true) }
+    val usersComposableVisibilityState = remember { mutableStateOf(true) }
+    val messagesComposableVisibilityState = remember { mutableStateOf(true) }
     
     val coroutineScope = rememberCoroutineScope()
 
@@ -234,6 +235,38 @@ fun RoadMapAndOrSessionScreenContent(
                         }
                     }
 
+                    usersComposable?.let { usersComposable ->
+                        stickyHeader {
+                            GroupHeader(
+                                modifier = Modifier.clickable {
+                                    usersComposableVisibilityState.value = !(usersComposableVisibilityState.value)
+                                },
+                                title = stringResource(R.string.companions)
+                            )
+                        }
+                        item {
+                            AnimatedVisibility(visible = usersComposableVisibilityState.value) {
+                                usersComposable()
+                            }
+                        }
+                    }
+
+                    messagesComposable?.let { messagesComposable ->
+                        stickyHeader {
+                            GroupHeader(
+                                modifier = Modifier.clickable {
+                                    messagesComposableVisibilityState.value = !(messagesComposableVisibilityState.value)
+                                },
+                                title = stringResource(R.string.messages)
+                            )
+                        }
+                        item {
+                            AnimatedVisibility(visible = messagesComposableVisibilityState.value) {
+                                messagesComposable()
+                            }
+                        }
+                    }
+
                     roadMap.nodes.forEach { node ->
                         stickyHeader {
                             GroupHeader(
@@ -296,7 +329,10 @@ fun RoadMapAndOrSessionScreenContent(
                                         onTaskChecked?.let {
                                             Checkbox(
                                                 checked = task.id in taskStates,
-                                                onCheckedChange = {onTaskChecked(task)}
+                                                onCheckedChange = {onTaskChecked(
+                                                    task,
+                                                    !(task.id in taskStates)
+                                                )}
                                             )
                                         }
 

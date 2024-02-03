@@ -19,6 +19,7 @@ import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.domain.model.RoadMapItem
+import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
 import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
@@ -65,11 +66,11 @@ interface DataRepository {
         id: Long
     ): Flow<Resource<MapSession>>
 
-    fun startSession(id: Long): Flow<Resource<ResponseInfo>>
-    fun endSession(id: Long): Flow<Resource<ResponseInfo>>
+    fun startSession(id: Long): Flow<Resource<MapSession>>
+    fun endSession(id: Long): Flow<Resource<MapSession>>
     fun joinSession(id: Long): Flow<Resource<MapSession>>
-    fun leaveSession(id: Long): Flow<Resource<ResponseInfo>>
-    fun sendMessage(id: Long, message: NewSessionChatMessageDto): Flow<Resource<ResponseInfo>>
+    fun leaveSession(id: Long): Flow<Resource<MapSession>>
+    fun sendMessage(id: Long, message: NewSessionChatMessageDto): Flow<Resource<List<SessionChatMessage>>>
     fun markTask(
         id: Long,
         taskId: Long,

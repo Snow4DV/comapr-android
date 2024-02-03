@@ -85,7 +85,10 @@ object SampleData {
         state = MapSession.State.LOBBY,
         groupChatUrl = "tg.com/somechat",
         messages = messages,
-        roadMap = roadMap
+        roadMap = roadMap,
+        false,
+        true,
+        emptyList()
     )
 }
 

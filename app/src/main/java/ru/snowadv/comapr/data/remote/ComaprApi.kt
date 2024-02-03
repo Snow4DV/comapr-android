@@ -15,6 +15,7 @@ import ru.snowadv.comapr.data.remote.dto.SignupInfoDto
 import ru.snowadv.comapr.data.remote.dto.JwtAuthDto
 import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
+import ru.snowadv.comapr.data.remote.dto.SessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
 import ru.snowadv.comaprbackend.dto.CategorizedRoadMapsDto
 import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
@@ -75,19 +76,19 @@ interface ComaprApi {
     suspend fun updateSession(@Body dto: ClearMapSessionDto, @Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/start")
-    suspend fun startSession(@Path("id") id: Long): ResponseInfoDto
+    suspend fun startSession(@Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/end")
-    suspend fun endSession(@Path("id") id: Long): ResponseInfoDto
+    suspend fun endSession(@Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/join")
     suspend fun joinSession(@Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/leave")
-    suspend fun leaveSession(@Path("id") id: Long): ResponseInfoDto
+    suspend fun leaveSession(@Path("id") id: Long): MapSessionDto
 
     @POST("/api/v1/session/{id}/sendMessage")
-    suspend fun sendMessage(@Path("id") id: Long, @Body message: NewSessionChatMessageDto): ResponseInfoDto
+    suspend fun sendMessage(@Path("id") id: Long, @Body message: NewSessionChatMessageDto): List<SessionChatMessageDto>
 
     @POST("/api/v1/session/{id}/markTask/{taskId}")
     suspend fun markTask(
