@@ -42,6 +42,11 @@ fun ZonedDateTime.toUtcLocalDateTime(): LocalDateTime {
     return this.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime()
 }
 
+fun getUrlPath(path: String, args: List<Pair<String, String>>): String {
+    if(args.isEmpty()) return path
+    return "$path?" + args.joinToString("&") { "${it.first}=${it.second}" }
+}
+
 fun millisToZonedDateTime(millis: Long): ZonedDateTime {
     return ZonedDateTime.ofInstant(Instant.ofEpochMilli(millis), getCurrentZoneId())
 }

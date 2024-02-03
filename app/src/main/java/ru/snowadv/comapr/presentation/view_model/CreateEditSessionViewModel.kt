@@ -28,11 +28,13 @@ class CreateEditSessionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val sessionId = savedStateHandle.get<String?>("sessionId")?.toLongOrNull()
+    private val roadMapId = savedStateHandle.get<String?>("roadMapId")?.toLongOrNull()
 
     private val _state = mutableStateOf(
         CreateEditSessionScreenState(
             loading = false,
-            newSession = (sessionId == null)
+            newSession = (sessionId == null),
+            roadMapId = roadMapId
         )
     )
     val state: State<CreateEditSessionScreenState> = _state

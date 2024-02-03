@@ -86,7 +86,10 @@ fun SimpleTopBarWithBackButton(
     onBackClicked: () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(title) },
+        title = { Text(
+            text = title,
+            maxLines = 1
+        ) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,

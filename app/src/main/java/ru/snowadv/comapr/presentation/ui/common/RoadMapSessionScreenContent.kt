@@ -16,10 +16,12 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,6 +55,7 @@ import ru.snowadv.comapr.domain.model.Task
 @Composable
 fun RoadMapAndOrSessionScreenContent(
     modifier: Modifier = Modifier,
+    isSession: Boolean = false,
     onBackClicked: () -> Unit,
     onRefresh: () -> Unit,
     onUrlClick: (String) -> Unit,
@@ -60,7 +63,8 @@ fun RoadMapAndOrSessionScreenContent(
     loading: Boolean,
     sessionComposable: @Composable (() -> Unit)? = null,
     onTaskChecked: ((Task) -> Unit)? = null,
-    taskStates: Set<Long> = emptySet()
+    taskStates: Set<Long> = emptySet(),
+    onCreateSession: () -> Unit
 ) {
     val pullRefreshState =
         rememberPullRefreshState(loading, { onRefresh() })
@@ -158,6 +162,28 @@ fun RoadMapAndOrSessionScreenContent(
                                                 .height(with(LocalDensity.current) { 16.sp.toDp() }),
                                             tint = MaterialTheme.colorScheme.tertiary,
                                         )
+                                    }
+                                    if(!isSession) {
+                                        Row(
+                                            modifier = Modifier.clickable {
+                                                onCreateSession()
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Create,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .height(with(LocalDensity.current) { 18.sp.toDp() })
+                                                    .padding(end = 5.dp),
+                                                tint = MaterialTheme.colorScheme.primary,
+                                            )
+                                            Text(
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                text = stringResource(id = R.string.create_session),
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
                                     }
                                 }
                             }

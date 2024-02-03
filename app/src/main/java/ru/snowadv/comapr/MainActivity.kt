@@ -81,7 +81,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                             else -> {
-                                navController.navigate(navEvent.route)
+                                navController.navigate(navEvent.route) {
+                                    if(navEvent.popUpToStart) {
+                                        popUpTo(navController.graph.startDestinationRoute!!)
+                                    }
+                                }
                             }
                         }
                     }.launchIn(this)
@@ -143,12 +147,19 @@ class MainActivity : ComponentActivity() {
 
 
                             composable(
-                                "sessionEditor?sessionId={sessionId}",
-                                arguments = listOf(navArgument("sessionId") {
+                                "sessionEditor?sessionId={sessionId}&roadMapId={roadMapId}",
+                                arguments = listOf(
+                                    navArgument("sessionId") {
                                     type = NavType.StringType
                                     defaultValue = null
                                     nullable = true
-                                })
+                                    },
+                                    navArgument("roadMapId") {
+                                        type = NavType.StringType
+                                        defaultValue = null
+                                        nullable = true
+                                    }
+                                )
                             ) {
                                 CreateEditSessionScreen(
                                     modifier = Modifier.fillMaxSize(),

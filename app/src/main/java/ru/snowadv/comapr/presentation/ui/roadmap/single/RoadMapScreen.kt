@@ -43,14 +43,13 @@ fun RoadMapScreen(
         onRefresh = { roadMapViewModel.getRoadMap(roadMapId) },
         onUrlClick = {
             mainViewModel.sendUiEvent(UiEvent.OpenLink(it))
+        },
+        onCreateSession = {
+            mainViewModel.navigate(NavigationEvent.ToSessionEditor(roadMapId = roadMapViewModel.state.value.roadMap?.id))
         }
     )
 
 }
-
-
-
-
 
 
 @Preview
@@ -64,7 +63,8 @@ fun RoadMapItemPreview() {
         onBackClicked = {},
         loading = true,
         onRefresh = {},
-        onUrlClick = {}
+        onUrlClick = {},
+        onCreateSession = {}
     )
 }
 

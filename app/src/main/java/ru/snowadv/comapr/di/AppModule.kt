@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,11 +15,11 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.snowadv.comapr.data.local.UserDataDao
-import ru.snowadv.comapr.data.local.UserDataDb
 import ru.snowadv.comapr.data.converter.JsonConverter
 import ru.snowadv.comapr.data.converter.JsonConverterImpl
 import ru.snowadv.comapr.data.converter.RoomTypeConverter
+import ru.snowadv.comapr.data.local.UserDataDao
+import ru.snowadv.comapr.data.local.UserDataDb
 import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.data.remote.ComaprApi
 import ru.snowadv.comapr.data.repository.DataRepositoryImpl
@@ -27,7 +29,7 @@ import ru.snowadv.comapr.domain.repository.SessionRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.EventAggregatorImpl
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -39,11 +41,19 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGson(): Gson {
-        return GsonBuilder().registerTypeAdapter(
-            LocalDateTime::class.java,
-            JsonDeserializer { json, type, jsonDeserializationContext ->
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        return GsonBuilder()
+
+            .registerTypeAdapter(
+            LocalDateTime::class.java, JsonDeserializer { json, type, jsonDeserializationContext ->
                 LocalDateTime.parse(json.asJsonPrimitive.asString)
-            }).create()
+            })
+            .registerTypeAdapter(
+                LocalDateTime::class.java, JsonSerializer<LocalDateTime> {localDateTime, type, jsonSerializationContext ->
+                    JsonPrimitive(localDateTime.format(formatter))
+                }
+            )
+            .create()
     }
 
     @Provides
