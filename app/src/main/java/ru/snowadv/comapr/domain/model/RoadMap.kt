@@ -13,7 +13,8 @@ data class RoadMap(
     val likes: Int,
     val dislikes: Int,
     val categoryName: String,
-    val verificationStatus: VerificationStatus
+    val verificationStatus: VerificationStatus,
+    val tasksCount: Int
 ) {
     fun toDto(): RoadMapDto {
         return RoadMapDto(
@@ -25,7 +26,8 @@ data class RoadMap(
             likes,
             dislikes,
             categoryName,
-            verificationStatus.id
+            verificationStatus.id,
+            tasksCount
         )
     }
 

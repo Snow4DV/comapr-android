@@ -50,7 +50,8 @@ import ru.snowadv.comapr.presentation.ui.common.GroupHeader
 import ru.snowadv.comapr.presentation.ui.common.SimpleTopBarWithBackButton
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -64,24 +65,24 @@ fun RoadMapAndOrSessionScreenContent(
     loading: Boolean,
     sessionComposable: @Composable (() -> Unit)? = null,
     usersComposable: @Composable (() -> Unit)? = null,
-    messagesComposable: @Composable (() -> Unit)? = null,
+    sessionStatsComposable: @Composable (() -> Unit)? = null,
     onTaskChecked: ((Task, Boolean) -> Unit)? = null,
     taskStates: Set<Long> = emptySet(),
     onCreateSession: () -> Unit = {},
-    scrollToNodeId: Long? = null
+    scrollToNodeId: Long? = null,
+    participantsCount: Int = 0
 ) {
     val lazyListState = rememberLazyListState()
 
-    val pullRefreshState =
-        rememberPullRefreshState(loading, { onRefresh() })
+    val pullRefreshState = rememberPullRefreshState(loading, { onRefresh() })
 
     val hiddenNodes = remember { mutableStateMapOf<Long, Boolean>() }
 
     val mapVisibilityState = remember { mutableStateOf(true) }
     val sessionComposableVisibilityState = remember { mutableStateOf(true) }
     val usersComposableVisibilityState = remember { mutableStateOf(true) }
-    val messagesComposableVisibilityState = remember { mutableStateOf(true) }
-    
+    val sessionStatsComposableVisibilityState = remember { mutableStateOf(true) }
+
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(scrollToNodeId, roadMap) {
@@ -101,15 +102,12 @@ fun RoadMapAndOrSessionScreenContent(
         }
     }
 
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            SimpleTopBarWithBackButton(
-                title = roadMap?.name ?: stringResource(R.string.loading),
-                onBackClicked = onBackClicked
-            )
-        }
-    ) { paddingValues ->
+    Scaffold(modifier = modifier, topBar = {
+        SimpleTopBarWithBackButton(
+            title = roadMap?.name ?: stringResource(R.string.loading),
+            onBackClicked = onBackClicked
+        )
+    }) { paddingValues ->
         Box(
             modifier = Modifier
                 .pullRefresh(pullRefreshState)
@@ -119,14 +117,13 @@ fun RoadMapAndOrSessionScreenContent(
 
             if (roadMap != null) {
                 LazyColumn(
-                    state = lazyListState,
-                    modifier = Modifier.fillMaxWidth()) {
+                    state = lazyListState, modifier = Modifier.fillMaxWidth()
+                ) {
                     stickyHeader {
                         GroupHeader(
                             modifier = Modifier.clickable {
                                 mapVisibilityState.value = !(mapVisibilityState.value)
-                            },
-                            title = roadMap.name
+                            }, title = roadMap.name
                         )
                     }
                     item {
@@ -175,8 +172,7 @@ fun RoadMapAndOrSessionScreenContent(
                                         Icon(
                                             imageVector = Icons.Filled.ThumbUp,
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .height(with(LocalDensity.current) { 16.sp.toDp() }),
+                                            modifier = Modifier.height(with(LocalDensity.current) { 16.sp.toDp() }),
                                             tint = MaterialTheme.colorScheme.secondary,
                                         )
                                         Text(
@@ -187,17 +183,14 @@ fun RoadMapAndOrSessionScreenContent(
                                         Icon(
                                             painterResource(id = R.drawable.thumb_down),
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .height(with(LocalDensity.current) { 16.sp.toDp() }),
+                                            modifier = Modifier.height(with(LocalDensity.current) { 16.sp.toDp() }),
                                             tint = MaterialTheme.colorScheme.tertiary,
                                         )
                                     }
-                                    if(!isSession) {
-                                        Row(
-                                            modifier = Modifier.clickable {
-                                                onCreateSession()
-                                            }
-                                        ) {
+                                    if (!isSession) {
+                                        Row(modifier = Modifier.clickable {
+                                            onCreateSession()
+                                        }) {
                                             Icon(
                                                 imageVector = Icons.Filled.Create,
                                                 contentDescription = null,
@@ -223,9 +216,9 @@ fun RoadMapAndOrSessionScreenContent(
                         stickyHeader {
                             GroupHeader(
                                 modifier = Modifier.clickable {
-                                    sessionComposableVisibilityState.value = !(sessionComposableVisibilityState.value)
-                                },
-                                title = stringResource(R.string.current_session)
+                                    sessionComposableVisibilityState.value =
+                                        !(sessionComposableVisibilityState.value)
+                                }, title = stringResource(R.string.current_session)
                             )
                         }
                         item {
@@ -239,9 +232,9 @@ fun RoadMapAndOrSessionScreenContent(
                         stickyHeader {
                             GroupHeader(
                                 modifier = Modifier.clickable {
-                                    usersComposableVisibilityState.value = !(usersComposableVisibilityState.value)
-                                },
-                                title = stringResource(R.string.companions)
+                                    usersComposableVisibilityState.value =
+                                        !(usersComposableVisibilityState.value)
+                                }, title = stringResource(R.string.companions)
                             )
                         }
                         item {
@@ -251,18 +244,18 @@ fun RoadMapAndOrSessionScreenContent(
                         }
                     }
 
-                    messagesComposable?.let { messagesComposable ->
+                    sessionStatsComposable?.let { sessionStatsComposable ->
                         stickyHeader {
                             GroupHeader(
                                 modifier = Modifier.clickable {
-                                    messagesComposableVisibilityState.value = !(messagesComposableVisibilityState.value)
-                                },
-                                title = stringResource(R.string.messages)
+                                    sessionStatsComposableVisibilityState.value =
+                                        !(sessionStatsComposableVisibilityState.value)
+                                }, title = stringResource(R.string.statistics)
                             )
                         }
                         item {
-                            AnimatedVisibility(visible = messagesComposableVisibilityState.value) {
-                                messagesComposable()
+                            AnimatedVisibility(visible = sessionStatsComposableVisibilityState.value) {
+                                sessionStatsComposable()
                             }
                         }
                     }
@@ -271,11 +264,8 @@ fun RoadMapAndOrSessionScreenContent(
                         stickyHeader {
                             GroupHeader(
                                 modifier = Modifier.clickable {
-                                    hiddenNodes[node.id] =
-                                        !(hiddenNodes[node.id] ?: true)
-                                },
-                                title = node.name,
-                                description = node.description
+                                    hiddenNodes[node.id] = !(hiddenNodes[node.id] ?: true)
+                                }, title = node.name, description = node.description
                             )
                         }
                         items(node.tasks) { task ->
@@ -290,7 +280,9 @@ fun RoadMapAndOrSessionScreenContent(
                                     Row(
                                         Modifier
                                             .padding(8.dp)
-                                            .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                            .fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
                                         Column(modifier = Modifier.weight(1.0f, fill = true)) {
                                             Text(
                                                 text = task.name,
@@ -303,11 +295,9 @@ fun RoadMapAndOrSessionScreenContent(
                                                 remember { Regex("""(http://)|(https://)""") }
                                             task.url?.let { taskUrl ->
                                                 val resLink = taskUrl.replace(urlBeginPattern, "")
-                                                Row(
-                                                    modifier = Modifier.clickable {
-                                                        onUrlClick(taskUrl)
-                                                    }
-                                                ) {
+                                                Row(modifier = Modifier.clickable {
+                                                    onUrlClick(taskUrl)
+                                                }) {
                                                     Icon(
                                                         painter = painterResource(id = R.drawable.link_filled),
                                                         contentDescription = null,
@@ -325,15 +315,32 @@ fun RoadMapAndOrSessionScreenContent(
                                                 }
                                             }
 
+                                            val finishedPartCount = task.finishedUserIds?.size ?: 0
+                                            if (finishedPartCount in 1..<participantsCount) {
+
+                                                Text(
+                                                    text = "${task.finishedUserIds?.size}/${participantsCount}${
+                                                        stringResource(R.string.already_finished)
+                                                    }",
+                                                    fontSize = 15.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            } else if(finishedPartCount >= participantsCount) {
+                                                Text(
+                                                    text = stringResource(R.string.everyone_finished_yay),
+                                                    fontSize = 15.sp,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            }
+
                                         }
                                         onTaskChecked?.let {
-                                            Checkbox(
-                                                checked = task.id in taskStates,
-                                                onCheckedChange = {onTaskChecked(
-                                                    task,
-                                                    !(task.id in taskStates)
-                                                )}
-                                            )
+                                            Checkbox(checked = task.id in taskStates,
+                                                onCheckedChange = {
+                                                    onTaskChecked(
+                                                        task, !(task.id in taskStates)
+                                                    )
+                                                })
                                         }
 
                                     }

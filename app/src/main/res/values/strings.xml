@@ -55,4 +55,7 @@
     <string name="active_sessions">Active sessions</string>
     <string name="public_sessions">Public sessions</string>
     <string name="session_is_over">Session is over</string>
+    <string name="statistics">Statistics</string>
+    <string name="already_finished">" already finished!"</string>
+    <string name="everyone_finished_yay">Everyone finished, yay!</string>
 </resources>

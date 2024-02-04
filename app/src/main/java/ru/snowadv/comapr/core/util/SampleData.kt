@@ -67,7 +67,8 @@ object SampleData {
         likes = 5,
         dislikes = 4,
         categoryName = "Competitive programming",
-        verificationStatus = RoadMap.VerificationStatus.VERIFIED
+        verificationStatus = RoadMap.VerificationStatus.VERIFIED,
+        20
     )
 
     val user = User(1, "testuser", "email@example.com", Role.ROLE_ADMIN)
