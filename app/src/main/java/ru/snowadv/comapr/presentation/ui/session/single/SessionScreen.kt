@@ -43,7 +43,7 @@ fun SessionScreen(
         modifier = modifier,
         isSession = true,
         taskStates = state.session?.finishedTasksIds?.toSet() ?: emptySet(),
-        onBackClicked = { mainViewModel.navigate(NavigationEvent.BackToHomeScreen) },
+        onBackClicked = { mainViewModel.navigate(NavigationEvent.PopBackStack) },
         roadMap = state.session?.roadMap,
         loading = state.loading,
         onRefresh = { sessionViewModel.getSession() },

@@ -12,6 +12,6 @@ data class ClearMapSession(
     val roadMapId: Long
 ) {
     fun toDto(): ClearMapSessionDto {
-        return ClearMapSessionDto(public, startDate.toLocalDateTime(), groupChatUrl, roadMapId)
+        return ClearMapSessionDto(public, startDate.toLocalDateTime(), if(groupChatUrl?.isBlank() != false) null else groupChatUrl, roadMapId)
     }
 }

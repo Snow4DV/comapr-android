@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.snowadv.comapr.core.util.NavigationEvent
@@ -40,6 +41,7 @@ import ru.snowadv.comapr.presentation.ui.home.HomeScreen
 import ru.snowadv.comapr.presentation.ui.roadmap.single.RoadMapScreen
 import ru.snowadv.comapr.presentation.ui.session.modify.CreateEditSessionScreen
 import ru.snowadv.comapr.presentation.ui.session.single.SessionScreen
+import ru.snowadv.comapr.presentation.ui.splash.SplashScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapViewModel
 import ru.snowadv.comapr.ui.theme.ComaprTheme
@@ -67,26 +69,25 @@ class MainActivity : ComponentActivity() {
                     }.launchIn(this)
 
                     mainViewModel.navigationFlow.onEach { navEvent ->  // subscribe to navigation events
+                        Log.d(TAG, "Navigation flow: navigating $navEvent")
                         when (navEvent) {
                             is NavigationEvent.ToHomeScreen, is NavigationEvent.ToLoginScreen -> {
                                 navController.navigate(navEvent.route) {
-                                    popUpTo(navEvent.route) {
+                                    popUpTo(navController.graph.startDestinationRoute!!) {
                                         inclusive = true
                                     }
                                 }
-                                navController.graph.setStartDestination(navEvent.route)
+
+
                             }
-                            is NavigationEvent.BackToHomeScreen -> {
-                                navController.navigate(navEvent.route) {
-                                    popUpTo(navEvent.route)
-                                }
+                            is NavigationEvent.PopBackStack -> {
+                                navController.popBackStack()
                             }
                             else -> {
-                                navController.navigate(navEvent.route) {
-                                    if(navEvent.popUpToStart) {
-                                        popUpTo(navController.graph.startDestinationRoute!!)
-                                    }
+                                while (navEvent.popUpToStart && navController.backQueue.size > 2) {
+                                    navController.popBackStack()
                                 }
+                                navController.navigate(navEvent.route)
                             }
                         }
                     }.launchIn(this)
@@ -111,8 +112,11 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             modifier = Modifier.fillMaxSize(),
                             navController = navController,
-                            startDestination = "home"
+                            startDestination = "splash"
                         ) {
+                            composable("splash") {
+                                SplashScreen(modifier = Modifier.fillMaxSize())
+                            }
                             composable("login") {
                                 LoginScreen(
                                     modifier = Modifier.fillMaxSize(),

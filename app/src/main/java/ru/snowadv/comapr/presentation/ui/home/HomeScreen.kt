@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Place
@@ -34,20 +36,40 @@ import ru.snowadv.comapr.presentation.ui.profile.ProfileScreen
 import ru.snowadv.comapr.presentation.ui.roadmap.list.RoadMapsScreen
 import ru.snowadv.comapr.presentation.ui.session.list.SessionsScreen
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
-import ru.snowadv.comapr.presentation.view_model.ProfileViewModel
-import ru.snowadv.comapr.presentation.view_model.RoadMapsViewModel
-import ru.snowadv.comapr.presentation.view_model.SessionsViewModel
 
 
 enum class BottomNavigationItem(
     val navRoute: String,
+    val bottomTitleResId: Int,
     val titleResId: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
-    RoadMaps("roadmaps", R.string.road_maps, Icons.Filled.Place, Icons.Outlined.Place),
-    Sessions("sessions", R.string.sessions, Icons.Filled.List, Icons.Outlined.List),
-    Profile("profile", R.string.profile, Icons.Filled.Person, Icons.Outlined.Person)
+    RoadMaps(
+        "roadmaps",
+        R.string.road_maps,
+        R.string.road_maps,
+        Icons.Filled.Place,
+        Icons.Outlined.Place
+    ),
+    PublicSessions(
+        "sessions", R.string.public_sessions_bottom,
+        R.string.public_sessions, Icons.Filled.List, Icons.Outlined.List
+    ),
+    MyActiveSessions(
+        "activeSessions",
+        R.string.active_sessions_bottom,
+        R.string.active_sessions,
+        Icons.Filled.CheckCircle,
+        Icons.Outlined.CheckCircle
+    ),
+    Profile(
+        "profile",
+        R.string.profile,
+        R.string.profile,
+        Icons.Filled.Person,
+        Icons.Outlined.Person
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,15 +81,12 @@ fun HomeScreen(
     val navController = rememberNavController()
     val selectedScreenIndex = rememberSaveable { mutableIntStateOf(0) }
 
-    val profileViewModel: ProfileViewModel = hiltViewModel()
-    val roadMapsViewModel: RoadMapsViewModel = hiltViewModel()
-    val sessionViewModel: SessionsViewModel = hiltViewModel()
 
     Scaffold(
         modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(BottomNavigationItem.entries[selectedScreenIndex.intValue].name) },
+                title = { Text(stringResource(id = BottomNavigationItem.entries[selectedScreenIndex.intValue].titleResId)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -96,7 +115,7 @@ fun HomeScreen(
                             println()
                         },
                         label = {
-                            Text(text = stringResource(id = item.titleResId))
+                            Text(text = stringResource(id = item.bottomTitleResId))
                         },
                         alwaysShowLabel = true,
                         icon = {
@@ -104,7 +123,7 @@ fun HomeScreen(
                                 imageVector = if (index == selectedScreenIndex.intValue) {
                                     item.selectedIcon
                                 } else item.unselectedIcon,
-                                contentDescription = stringResource(id = item.titleResId)
+                                contentDescription = stringResource(id = item.bottomTitleResId)
                             )
                         }
                     )
@@ -123,20 +142,33 @@ fun HomeScreen(
                 RoadMapsScreen(
                     mainViewModel = mainViewModel,
                     modifier = Modifier.fillMaxSize(),
-                    roadMapsViewModel = roadMapsViewModel
+                    roadMapsViewModel = hiltViewModel()
                 )
             }
-            composable("sessions") {
+            composable(
+                route = "sessions"
+            ) {
                 SessionsScreen(
                     modifier = Modifier.fillMaxSize(),
                     mainViewModel = mainViewModel,
-                    sessionsViewModel = sessionViewModel
+                    sessionsViewModel = hiltViewModel(),
+                    showOnlyUserActiveSessions = false
+                )
+            }
+            composable(
+                route = "activeSessions"
+            ) {
+                SessionsScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    mainViewModel = mainViewModel,
+                    sessionsViewModel = hiltViewModel(),
+                    showOnlyUserActiveSessions = true
                 )
             }
             composable("profile") {
                 ProfileScreen(
                     modifier = Modifier.fillMaxSize(),
-                    profileViewModel = profileViewModel,
+                    profileViewModel = hiltViewModel(),
                     mainViewModel = mainViewModel
                 )
             }

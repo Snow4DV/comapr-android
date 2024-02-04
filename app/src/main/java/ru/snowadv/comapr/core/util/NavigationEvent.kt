@@ -2,7 +2,7 @@ package ru.snowadv.comapr.core.util
 
 sealed class NavigationEvent(val route: String, val popUpToStart: Boolean = false) {
     data object ToHomeScreen : NavigationEvent("home")
-    data object BackToHomeScreen : NavigationEvent("home")
+    data object PopBackStack : NavigationEvent("home")
     data object ToLoginScreen : NavigationEvent("login")
 
     class ToRoadMap(mapId: Long, nodeId: Long? = null, popUpToStart: Boolean = false) :

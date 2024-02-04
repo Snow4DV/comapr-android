@@ -54,14 +54,14 @@ class CreateEditSessionViewModel @Inject constructor(
             dataRepository.createSession(
                 public = state.value.public,
                 startDate = state.value.startDate,
-                groupChatUrl = state.value.groupChatUrl,
+                groupChatUrl = state.value.groupChatUrl.ifEmpty { null },
                 roadMapId = mapId
             )
         } else {
             dataRepository.updateSession(
                 public = state.value.public,
                 startDate = state.value.startDate,
-                groupChatUrl = state.value.groupChatUrl,
+                groupChatUrl = state.value.groupChatUrl.ifEmpty { null },
                 roadMapId = mapId,
                 id = sessionId!!
             )
@@ -86,7 +86,7 @@ class CreateEditSessionViewModel @Inject constructor(
                             loading = false,
                         )
                         resource.data?.let {data ->
-                            eventAggregator.navigationChannel.send(NavigationEvent.ToSession(data.id, true))
+                            eventAggregator.navigationChannel.send(NavigationEvent.ToSession(data.id, newSession))
                         }
                     }
                 }

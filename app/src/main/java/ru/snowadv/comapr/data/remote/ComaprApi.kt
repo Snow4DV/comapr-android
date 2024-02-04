@@ -101,6 +101,9 @@ interface ComaprApi {
     @GET("/api/v1/user/info")
     suspend fun getUserInfo(): UserAndSessionsDto
 
+    @GET("/api/v1/user/activeSessions")
+    suspend fun getActiveSessions(): List<MapSessionDto>
+
     companion object {
         const val BASE_URL = "http://192.168.0.15:8080/"
     }

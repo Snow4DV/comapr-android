@@ -37,7 +37,7 @@ fun RoadMapScreen(
 
     RoadMapAndOrSessionScreenContent(
         modifier = modifier,
-        onBackClicked = { mainViewModel.navigate(NavigationEvent.BackToHomeScreen) },
+        onBackClicked = { mainViewModel.navigate(NavigationEvent.PopBackStack) },
         roadMap = roadMapViewModel.state.value.roadMap,
         loading = roadMapViewModel.state.value.loading,
         onRefresh = { roadMapViewModel.getRoadMap() },

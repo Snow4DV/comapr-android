@@ -41,23 +41,24 @@ import ru.snowadv.comapr.presentation.view_model.SessionsViewModel
 fun SessionsScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel,
-    sessionsViewModel: SessionsViewModel
+    sessionsViewModel: SessionsViewModel,
+    showOnlyUserActiveSessions: Boolean = false
 ) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(true) {
+    LaunchedEffect(showOnlyUserActiveSessions) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            sessionsViewModel.loadDataIfDidntLoadBefore()
+            sessionsViewModel.loadDataIfDidntLoadBefore(showOnlyUserActiveSessions)
         }
     }
 
     SessionsScreenContent(
         modifier = modifier,
         state = sessionsViewModel.state.value,
-        onRefresh = {sessionsViewModel.getSessions()},
-        onClickSession = {mainViewModel.navigate(NavigationEvent.ToSession(it.id))},
-        onCreateSession = {mainViewModel.navigate(NavigationEvent.ToSessionEditor())}
+        onRefresh = { if (showOnlyUserActiveSessions) sessionsViewModel.getActiveSessionsForCurrentUser() else sessionsViewModel.getSessions() },
+        onClickSession = { mainViewModel.navigate(NavigationEvent.ToSession(it.id)) },
+        onCreateSession = { mainViewModel.navigate(NavigationEvent.ToSessionEditor()) }
     )
 }
 

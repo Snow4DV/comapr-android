@@ -3,12 +3,14 @@ package ru.snowadv.comapr.presentation.ui.session.common
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -87,15 +89,23 @@ fun SessionItem(
                 fontSize = 18.sp,
                 icon = ImageVector.vectorResource(R.drawable.people_outlined)
             )
-            TextWithIcon(
-                text = "${stringResource(R.string.starting_at)}${
-                    session.startDate.format(
-                        DateTimeFormatter.ofPattern("yyyy.MM.DD hh:mm")
-                    )
-                }",
-                fontSize = 18.sp,
-                icon = ImageVector.vectorResource(R.drawable.clock_outlined)
-            )
+            if(session.state == MapSession.State.FINISHED) {
+                TextWithIcon(
+                    text = stringResource(R.string.session_is_over),
+                    fontSize = 18.sp,
+                    icon = Icons.Outlined.CheckCircle
+                )
+            } else {
+                TextWithIcon(
+                    text = "${stringResource(if (session.state == MapSession.State.LOBBY) R.string.starting_at else R.string.started_at)}${
+                        session.startDate.format(
+                            DateTimeFormatter.ofPattern("yyyy.MM.DD hh:mm")
+                        )
+                    }",
+                    fontSize = 18.sp,
+                    icon = ImageVector.vectorResource(R.drawable.clock_outlined)
+                )
+            }
             session.groupChatUrl?.let { chatUrl ->
                 if (showChatUrl) {
                     val urlBeginPattern =
@@ -129,23 +139,34 @@ fun SessionItem(
                     )
                 }
             }
-            if(onJoinSessionClick != null && !session.joined) {
-                Button(onClick = onJoinSessionClick, modifier = Modifier.align(Alignment.End)) {
-                    Text(stringResource(R.string.join))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                if (onStartSessionClick != null && session.isCreator && session.state == MapSession.State.LOBBY) {
+                    Button(onClick = onStartSessionClick) {
+                        Text(stringResource(R.string.start_session))
+                    }
+                } else if (onEndSessionClick != null && session.isCreator && session.state == MapSession.State.STARTED) {
+                    Button(onClick = onEndSessionClick) {
+                        Text(stringResource(R.string.end_session))
+                    }
                 }
-            } else if(onStartSessionClick != null && session.isCreator && session.state == MapSession.State.LOBBY) {
-                Button(onClick = onStartSessionClick, modifier = Modifier.align(Alignment.End)) {
-                    Text(stringResource(R.string.start_session))
-                }
-            } else if(onEndSessionClick != null && session.isCreator && session.state == MapSession.State.STARTED) {
-                Button(onClick = onEndSessionClick, modifier = Modifier.align(Alignment.End)) {
-                    Text(stringResource(R.string.end_session))
-                }
-            } else if(onLeaveSessionClick != null && session.joined && !session.isCreator) {
-                Button(onClick = onLeaveSessionClick, modifier = Modifier.align(Alignment.End)) {
-                    Text(stringResource(R.string.leave_session))
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (onJoinSessionClick != null && !session.joined && session.state != MapSession.State.FINISHED) {
+                    Button(onClick = onJoinSessionClick) {
+                        Text(stringResource(R.string.join))
+                    }
+                } else if (onLeaveSessionClick != null && session.joined && session.state != MapSession.State.FINISHED) {
+                    Button(onClick = onLeaveSessionClick) {
+                        Text(stringResource(R.string.leave_session))
+                    }
                 }
             }
+
+
 
         }
     }

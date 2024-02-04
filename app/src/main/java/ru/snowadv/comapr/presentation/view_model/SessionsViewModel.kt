@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
+import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.ui.session.list.SessionsScreenState
@@ -29,39 +30,57 @@ class SessionsViewModel @Inject constructor(
 
     private val loaded = mutableStateOf(false)
 
-    fun loadDataIfDidntLoadBefore() {
+    fun loadDataIfDidntLoadBefore(onlyActive: Boolean) {
         if(!loaded.value) {
             loaded.value = true
-            getSessions()
+            if(onlyActive) {
+                getActiveSessionsForCurrentUser()
+            } else {
+                getSessions()
+            }
         }
     }
     fun getSessions() {
         viewModelScope.launch(Dispatchers.IO) {
             state.value.apply {
                 dataRepository.fetchSessions().onEach {
-                    val data = it.data ?: _state.value.sessions
-                    when(it) {
-                        is Resource.Loading -> {
-                            _state.value = _state.value.copy(
-                                loading = true,
-                                sessions = data
-                            )
-                        }
-                        is Resource.Error -> {
-                            _state.value = _state.value.copy(
-                                loading = false,
-                                sessions = data
-                            )
-                            eventAggregator.eventChannel.send(UiEvent.ShowSnackbar(it.message ?: "Unknown error"))
-                        }
-                        is Resource.Success -> {
-                            _state.value = _state.value.copy(
-                                loading = false,
-                                sessions = data
-                            )
-                        }
-                    }
+                    updateData(it)
                 }.launchIn(this@launch)
+            }
+        }
+    }
+
+    fun getActiveSessionsForCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            state.value.apply {
+                dataRepository.fetchActiveSessionsByUser().onEach {
+                    updateData(it)
+                }.launchIn(this@launch)
+            }
+        }
+    }
+
+    private suspend fun updateData(resource: Resource<List<MapSession>>) {
+        val data = resource.data ?: return
+        when(resource) {
+            is Resource.Loading -> {
+                _state.value = _state.value.copy(
+                    loading = true,
+                    sessions = data
+                )
+            }
+            is Resource.Error -> {
+                _state.value = _state.value.copy(
+                    loading = false,
+                    sessions = data
+                )
+                eventAggregator.eventChannel.send(UiEvent.ShowSnackbar(resource.message ?: "Unknown error"))
+            }
+            is Resource.Success -> {
+                _state.value = _state.value.copy(
+                    loading = false,
+                    sessions = data
+                )
             }
         }
     }

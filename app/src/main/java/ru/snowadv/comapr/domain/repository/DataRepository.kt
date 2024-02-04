@@ -50,6 +50,7 @@ interface DataRepository {
 
 
     fun fetchSessions(): Flow<Resource<List<MapSession>>>
+    fun fetchActiveSessionsByUser(): Flow<Resource<List<MapSession>>>
     fun getSession(id: Long): Flow<Resource<MapSession>>
     fun createSession(
         public: Boolean,

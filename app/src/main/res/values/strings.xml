@@ -29,6 +29,7 @@
     <string name="map_sessions_list">"Roadmap: "</string>
     <string name="joined_users">"Joined users: "</string>
     <string name="starting_at">"Starting at: "</string>
+    <string name="started_at">"Started at: "</string>
     <string name="with_group_chat">(with group chat)</string>
     <string name="user">User</string>
     <string name="administrator">Administrator</string>
@@ -49,4 +50,9 @@
     <string name="start_session">Start session</string>
     <string name="end_session">End session</string>
     <string name="leave_session">Leave session</string>
+    <string name="public_sessions_bottom">Public</string>
+    <string name="active_sessions_bottom">Active</string>
+    <string name="active_sessions">Active sessions</string>
+    <string name="public_sessions">Public sessions</string>
+    <string name="session_is_over">Session is over</string>
 </resources>

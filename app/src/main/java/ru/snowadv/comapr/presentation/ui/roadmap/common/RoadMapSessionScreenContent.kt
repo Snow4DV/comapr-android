@@ -93,7 +93,7 @@ fun RoadMapAndOrSessionScreenContent(
                         flag = false
                     }
                     flag
-                }?.sumOf { it.tasks.size }?.let { sum ->
+                }?.sumOf { it.tasks.size + 1 }?.let { sum ->
                     lazyListState.animateScrollToItem(sum + 2)
                 }
 

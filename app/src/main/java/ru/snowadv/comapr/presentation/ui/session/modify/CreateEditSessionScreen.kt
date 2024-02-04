@@ -65,7 +65,7 @@ fun CreateEditSessionScreen(
         modifier = modifier,
         onEvent = { createEditSessionViewModel.onEvent(it) },
         state = createEditSessionViewModel.state.value,
-        onBackClicked = {mainViewModel.navigate(NavigationEvent.BackToHomeScreen)},
+        onBackClicked = {mainViewModel.navigate(NavigationEvent.PopBackStack)},
         onSaveClick = {createEditSessionViewModel.saveOrCreateSession()}
     )
 }

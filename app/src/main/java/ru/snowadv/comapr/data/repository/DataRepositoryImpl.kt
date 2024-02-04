@@ -135,6 +135,15 @@ class DataRepositoryImpl(
         })
     }
 
+    override fun fetchActiveSessionsByUser(): Flow<Resource<List<MapSession>>> = flow {
+        emit(Resource.Loading())
+        safeApiCall(block = {
+            emit(Resource.Success(api.getActiveSessions().map { it.toModel() }))
+        }, onException = {
+            emit(Resource.Error(it))
+        })
+    }
+
     override fun getSession(id: Long): Flow<Resource<MapSession>> = flow {
         emit(Resource.Loading())
         safeApiCall(block = {
