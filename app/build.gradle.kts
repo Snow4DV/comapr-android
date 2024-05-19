@@ -114,5 +114,23 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.paging:paging-compose:3.2.1")
 
+    // Testing
+    // Android Test Rules
+    androidTestImplementation("androidx.test:rules:1.5.0")
 
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.1")
+    testImplementation("io.kotest:kotest-assertions-core:5.8.1")
+    testImplementation("io.kotest:kotest-property:5.8.1")
+
+    androidTestImplementation("org.hamcrest:hamcrest:2.2")
+
+    androidTestImplementation("com.kaspersky.android-components:kaspresso:1.5.5")
+
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+
+    debugImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("com.kaspersky.android-components:kaspresso-compose-support:1.5.5")
 }

@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,7 +87,7 @@ fun RoadMapsScreen(
     val pullRefreshState =
         rememberPullRefreshState(state.value.loading, { roadMapsViewModel.getRoadMaps() })
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().testTag("RoadMapsScreen"),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -102,8 +103,7 @@ fun RoadMapsScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .pullRefresh(pullRefreshState),
-
+                .pullRefresh(pullRefreshState)
             ) {
             RoadMapsCategorizedList(
                 modifier = Modifier.fillMaxSize(),

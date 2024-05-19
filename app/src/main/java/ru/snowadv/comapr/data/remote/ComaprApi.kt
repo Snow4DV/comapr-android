@@ -17,7 +17,7 @@ import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.SessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
-import ru.snowadv.comaprbackend.dto.CategorizedRoadMapsDto
+import ru.snowadv.comapr.data.remote.dto.CategorizedRoadMapsDto
 import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 

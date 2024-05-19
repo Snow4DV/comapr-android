@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -42,7 +43,7 @@ fun LoginScreen(
 ) {
 
     AuthScreenContent(
-        modifier = modifier,
+        modifier = modifier.testTag("AuthScreen"),
         onLogin = { login, password -> mainViewModel.signIn(login, password)},
         onRegister = { email, login, password -> mainViewModel.signUp(email, login, password) }
     )
@@ -92,7 +93,8 @@ fun AuthScreenContent(
                     label = { Text(stringResource(R.string.email)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = elementsPadding),
+                        .padding(bottom = elementsPadding)
+                        .testTag("Email"),
                     value = emailValue.value,
                     onValueChange = { emailValue.value = it }
                 )
@@ -102,7 +104,8 @@ fun AuthScreenContent(
                 label = { Text(stringResource(R.string.username)) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = elementsPadding),
+                    .padding(bottom = elementsPadding)
+                    .testTag("Username"),
                 value = loginValue.value,
                 onValueChange = { loginValue.value = it }
             )
@@ -111,7 +114,8 @@ fun AuthScreenContent(
                 label = { Text(stringResource(R.string.password)) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = elementsPadding),
+                    .padding(bottom = elementsPadding)
+                    .testTag("Password"),
                 value = passwordValue.value,
                 onValueChange = { passwordValue.value = it }
             )
@@ -119,7 +123,8 @@ fun AuthScreenContent(
                 ClickableText(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = elementsPadding),
+                        .padding(bottom = elementsPadding)
+                        .testTag("ChangeModeButton"),
                     text = AnnotatedString(
                         stringResource(
                             if (it) R.string.already_registered else R.string.don_t_have_an_account
@@ -142,7 +147,8 @@ fun AuthScreenContent(
                     } else {
                         onLogin(loginValue.value, passwordValue.value)
                     }
-                }
+                },
+                modifier = Modifier.testTag("AuthButton")
             ) {
                 AnimatedContent(targetState = register.value, label = "buttonTextAnimation") {
                     Text(text = if (it) "Register" else "Login")
