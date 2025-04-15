@@ -2,7 +2,7 @@ package ru.snowadv.comapr.presentation.ui.roadmap.list
 
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.RoadMap
-import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
+import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
 
 data class RoadMapsScreenState(
     val roadMaps: List<CategorizedRoadMaps> = emptyList(),

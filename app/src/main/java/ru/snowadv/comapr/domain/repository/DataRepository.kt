@@ -1,19 +1,10 @@
 package ru.snowadv.comapr.domain.repository
 
 import kotlinx.coroutines.flow.Flow
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.data.remote.dto.CategoryDto
-import ru.snowadv.comapr.data.remote.dto.ClearMapSessionDto
-import ru.snowadv.comapr.data.remote.dto.MapSessionDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.RoadMapDto
-import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
 import ru.snowadv.comapr.domain.model.Category
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
@@ -21,10 +12,7 @@ import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.domain.model.RoadMapItem
 import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.UserAndSessions
-import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
-import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
-import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
-import java.time.LocalDateTime
+import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
 import java.time.ZonedDateTime
 
 interface DataRepository {
@@ -45,6 +33,7 @@ interface DataRepository {
 
     fun voteForRoadMap(id: Long, like: Boolean): Flow<Resource<ResponseInfo>>
     fun changeVerificationStatus(id: Long, statusId: Int): Flow<Resource<RoadMap>>
+
     fun updateRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
     fun createRoadMap(dto: RoadMapDto): Flow<Resource<RoadMap>>
 

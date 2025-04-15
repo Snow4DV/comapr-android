@@ -63,7 +63,7 @@ import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.presentation.ui.common.GroupHeader
 import ru.snowadv.comapr.presentation.view_model.MainViewModel
 import ru.snowadv.comapr.presentation.view_model.RoadMapsViewModel
-import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
+import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

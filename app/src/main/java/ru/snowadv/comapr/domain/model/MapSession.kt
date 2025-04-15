@@ -1,6 +1,5 @@
 package ru.snowadv.comapr.domain.model
 
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class MapSession(
@@ -27,15 +26,4 @@ data class MapSession(
             }
         }
     }
-
-
-    fun toClearModel(): ClearMapSession {
-        return ClearMapSession(
-            public = public,
-            startDate = startDate,
-            groupChatUrl = groupChatUrl,
-            roadMapId = roadMap.id
-        )
-    }
 }
-

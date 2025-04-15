@@ -1,7 +1,4 @@
-package ru.snowadv.comaprbackend.dto
-
-import ru.snowadv.comapr.data.remote.dto.RoadMapDto
-import ru.snowadv.comapr.domain.model.RoadMap
+package ru.snowadv.comapr.domain.model
 
 class CategorizedRoadMaps(
     val categoryName: String,

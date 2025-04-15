@@ -18,9 +18,7 @@ import ru.snowadv.comapr.domain.model.RoadMapItem
 import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comapr.domain.repository.DataRepository
-import ru.snowadv.comaprbackend.dto.CategorizedRoadMaps
-import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
-import java.time.LocalDateTime
+import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
 import java.time.ZonedDateTime
 
 class DataRepositoryImpl(

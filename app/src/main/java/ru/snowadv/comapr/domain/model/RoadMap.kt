@@ -1,8 +1,6 @@
 package ru.snowadv.comapr.domain.model
 
-import androidx.compose.runtime.Composable
 import ru.snowadv.comapr.R
-import ru.snowadv.comapr.data.remote.dto.RoadMapDto
 
 data class RoadMap(
     val id: Long,
@@ -16,21 +14,6 @@ data class RoadMap(
     val verificationStatus: VerificationStatus,
     val tasksCount: Int
 ) {
-    fun toDto(): RoadMapDto {
-        return RoadMapDto(
-            id,
-            name,
-            description,
-            categoryId,
-            nodes.map { it.toDto() },
-            likes,
-            dislikes,
-            categoryName,
-            verificationStatus.id,
-            tasksCount
-        )
-    }
-
 
     enum class VerificationStatus(val id: Int, val iconResId: Int, val textResId: Int) {
         HIDDEN(0, R.drawable.hidden_filled, R.string.hidden),
