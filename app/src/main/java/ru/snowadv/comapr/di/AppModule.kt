@@ -23,9 +23,9 @@ import ru.snowadv.comapr.data.local.UserDataDb
 import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.data.remote.ComaprApi
 import ru.snowadv.comapr.data.repository.DataRepositoryImpl
-import ru.snowadv.comapr.data.repository.SessionRepositoryImpl
+import ru.snowadv.comapr.data.repository.AuthRepositoryImpl
 import ru.snowadv.comapr.domain.repository.DataRepository
-import ru.snowadv.comapr.domain.repository.SessionRepository
+import ru.snowadv.comapr.domain.repository.AuthRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import ru.snowadv.comapr.presentation.EventAggregatorImpl
 import java.time.LocalDateTime
@@ -70,15 +70,23 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDataRepo(api: ComaprApi): DataRepository {
-        return DataRepositoryImpl(api)
+    fun provideDao(db: UserDataDb): UserDataDao {
+        return db.dao
     }
 
     @Provides
     @Singleton
-    fun provideDao(db: UserDataDb): UserDataDao {
-        return db.dao
+    fun provideAuthRepo(dao: UserDataDao, api: ComaprApi): AuthRepository {
+        return AuthRepositoryImpl(dao, api)
     }
+
+    @Provides
+    @Singleton
+    fun provideDataRepo(api: ComaprApi): DataRepository {
+        return DataRepositoryImpl(api)
+    }
+
+
 
     @Provides
     @Singleton
@@ -88,11 +96,7 @@ object AppModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideSessionRepo(dao: UserDataDao, api: ComaprApi): SessionRepository {
-        return SessionRepositoryImpl(dao, api)
-    }
+
 
     @Provides
     @Singleton

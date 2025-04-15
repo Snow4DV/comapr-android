@@ -25,7 +25,6 @@ fun RoadMapScreen(
     roadMapViewModel: RoadMapViewModel = hiltViewModel(),
     mainViewModel: MainViewModel
 ) {
-
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(true) {
@@ -33,7 +32,6 @@ fun RoadMapScreen(
             roadMapViewModel.getRoadMap()
         }
     }
-
 
     RoadMapAndOrSessionScreenContent(
         modifier = modifier,
@@ -49,7 +47,6 @@ fun RoadMapScreen(
         },
         scrollToNodeId = roadMapViewModel.state.value.scrollToNodeId
     )
-
 }
 
 

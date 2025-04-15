@@ -39,28 +39,18 @@ class RoadMapViewModel @Inject constructor(
                     val data = it.data ?: _state.value.roadMap
                     when(it) {
                         is Resource.Loading -> {
-                            _state.value = _state.value.copy(
-                                loading = true,
-                                roadMap = data
-                            )
+                            _state.value = _state.value.copy(loading = true, roadMap = data)
                         }
                         is Resource.Error -> {
-                            _state.value = _state.value.copy(
-                                loading = false,
-                                roadMap = data
-                            )
+                            _state.value = _state.value.copy(loading = false, roadMap = data)
                             eventAggregator.eventChannel.send(UiEvent.ShowSnackbar(it.message ?: "Unknown error"))
                         }
                         is Resource.Success -> {
-                            _state.value = _state.value.copy(
-                                loading = false,
-                                roadMap = data
-                            )
+                            _state.value = _state.value.copy(loading = false, roadMap = data)
                         }
                     }
                 }.launchIn(this@launch)
             }
         }
     }
-
 }

@@ -50,7 +50,6 @@ import ru.snowadv.comapr.presentation.ui.common.GroupHeader
 import ru.snowadv.comapr.presentation.ui.common.SimpleTopBarWithBackButton
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalMaterialApi::class,
     ExperimentalFoundationApi::class
 )

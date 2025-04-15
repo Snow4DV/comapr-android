@@ -22,19 +22,15 @@ import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 
 interface ComaprApi {
-
     @POST("/api/v1/auth/signin")
     suspend fun loginUser(@Body loginRequest: LoginInfoDto): JwtAuthDto
-
     @POST("/api/v1/auth/signup")
     suspend fun registerUser(@Body signUpRequest: SignupInfoDto): JwtAuthDto
-
     @POST("/api/v1/auth/authenticate")
     suspend fun authUser(@Header("Authorization") token: String): JwtAuthDto
-
-
     @GET("/api/v1/category/list")
     suspend fun getCategories(): List<CategoryDto>
+    // и другие ручки
 
     @GET("/api/v1/category/{id}")
     suspend fun getCategory(@Path("id") id: Long): CategoryDto

@@ -3,35 +3,31 @@ package ru.snowadv.comapr.presentation.view_model
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.Authenticator
 import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.data.remote.ApiAuthenticator
 import ru.snowadv.comapr.domain.model.AuthUser
-import ru.snowadv.comapr.domain.repository.SessionRepository
+import ru.snowadv.comapr.domain.repository.AuthRepository
 import ru.snowadv.comapr.presentation.EventAggregator
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    private val authRepository: AuthRepository,
     private val authenticator: ApiAuthenticator,
     private val eventAggregator: EventAggregator
 ) : ViewModel() {
@@ -82,7 +78,7 @@ class MainViewModel @Inject constructor(
         _loading.value = true
         var result: Resource<AuthUser>
         withContext(Dispatchers.IO) {
-            result = sessionRepository.authenticate()
+            result = authRepository.authenticate()
         }
         updateAuthUser(result)
 
@@ -92,7 +88,7 @@ class MainViewModel @Inject constructor(
         Log.e(TAG, "signIn: with $username $password")
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
-            updateAuthUser(sessionRepository.signIn(username, password))
+            updateAuthUser(authRepository.signIn(username, password))
         }
     }
 
@@ -100,7 +96,7 @@ class MainViewModel @Inject constructor(
         Log.d(TAG, "signOut: with $username $password $email")
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
-            updateAuthUser(sessionRepository.signUp(email, username, password))
+            updateAuthUser(authRepository.signUp(email, username, password))
         }
     }
 

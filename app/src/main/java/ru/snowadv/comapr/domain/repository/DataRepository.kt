@@ -21,8 +21,7 @@ interface DataRepository {
     fun createCategory(dto: CategoryDto): Flow<Resource<Category>>
 
     fun fetchRoadMap(id: Long): Flow<Resource<RoadMap>>
-    fun fetchMaps(
-        statusId: Int? = null,
+    fun fetchMaps(statusId: Int? = null,
         categoryId: Long? = null
     ): Flow<Resource<List<CategorizedRoadMaps>>>
 
