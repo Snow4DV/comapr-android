@@ -6,5 +6,5 @@ data class Task(
     val description: String,
     val url: String?,
     val finishedUserIds: List<Long>? = null,
-    val challenges: List<Challenge>,
+    val challenges: List<Challenge> = emptyList(),
 )

@@ -5,14 +5,15 @@ import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.data.remote.dto.CategoryDto
 import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.RoadMapDto
+import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
 import ru.snowadv.comapr.domain.model.Category
+import ru.snowadv.comapr.domain.model.Challenge
 import ru.snowadv.comapr.domain.model.MapSession
 import ru.snowadv.comapr.domain.model.ResponseInfo
 import ru.snowadv.comapr.domain.model.RoadMap
 import ru.snowadv.comapr.domain.model.RoadMapItem
 import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.UserAndSessions
-import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
 import java.time.ZonedDateTime
 
 interface DataRepository {
@@ -67,4 +68,8 @@ interface DataRepository {
     ): Flow<Resource<MapSession>>
 
     fun getUserInfo(): Flow<Resource<UserAndSessions>>
+
+    fun getChallengesForTask(id: Long): Flow<Resource<List<Challenge>>>
+
+    fun sendAnswers(taskId: Long, answers: Map<Long, String>)
 }

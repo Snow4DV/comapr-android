@@ -7,9 +7,10 @@ data class TaskDto(
     val name: String,
     val description: String,
     val url: String?,
-    val finishedUserIds: List<Long>? = null
+    val finishedUserIds: List<Long>? = null,
+    val challenges: List<ChallengeDto>
 ) {
     fun toModel(): Task {
-        return Task(id, name, description, url, finishedUserIds)
+        return Task(id, name, description, url, finishedUserIds, challenges.map { it.toModel() })
     }
 }

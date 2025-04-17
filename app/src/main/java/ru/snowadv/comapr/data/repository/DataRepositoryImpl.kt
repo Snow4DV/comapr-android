@@ -19,6 +19,7 @@ import ru.snowadv.comapr.domain.model.SessionChatMessage
 import ru.snowadv.comapr.domain.model.UserAndSessions
 import ru.snowadv.comapr.domain.repository.DataRepository
 import ru.snowadv.comapr.domain.model.CategorizedRoadMaps
+import ru.snowadv.comapr.domain.model.Challenge
 import java.time.ZonedDateTime
 
 class DataRepositoryImpl(
@@ -247,5 +248,13 @@ class DataRepositoryImpl(
         }, onException = {
             emit(Resource.Error(it))
         })
+    }
+
+    override fun getChallengesForTask(id: Long): Flow<Resource<List<Challenge>>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendAnswers(taskId: Long, answers: Map<Long, String>) {
+        TODO("Not yet implemented")
     }
 }
