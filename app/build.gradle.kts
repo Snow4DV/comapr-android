@@ -114,6 +114,9 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.paging:paging-compose:3.2.1")
 
+    // markwon
+    implementation("com.github.jeziellago:compose-markdown:0.5.7")
+
     // Testing
     // Android Test Rules
     androidTestImplementation("androidx.test:rules:1.5.0")

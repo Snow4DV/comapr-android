@@ -24,6 +24,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 import ru.snowadv.comapr.R
 import ru.snowadv.comapr.domain.model.RoadMap
@@ -288,7 +290,10 @@ fun RoadMapAndOrSessionScreenContent(
                                                 fontSize = 18.sp,
                                                 fontWeight = FontWeight.Medium
                                             )
-                                            Text(text = task.description, fontSize = 15.sp)
+                                            MarkdownText(
+                                                markdown = task.description,
+                                                style = LocalTextStyle.current.copy(fontSize = 15.sp),
+                                            )
 
                                             val urlBeginPattern =
                                                 remember { Regex("""(http://)|(https://)""") }

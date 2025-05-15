@@ -25,5 +25,5 @@ sealed class NavigationEvent(val route: String, val popUpToStart: Boolean = fals
             )))
     )
 
-
+    class ToQuizScreen(sessionId: Long, taskId: Long) : NavigationEvent("quiz/$sessionId/$taskId")
 }

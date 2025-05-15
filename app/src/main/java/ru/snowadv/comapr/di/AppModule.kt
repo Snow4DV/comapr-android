@@ -13,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.snowadv.comapr.data.converter.JsonConverter
@@ -114,6 +115,7 @@ object AppModule {
     @Singleton
     fun provideOkHttpClient(interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder().addInterceptor(interceptor)
+            .addInterceptor(HttpLoggingInterceptor())
             .connectTimeout(15, TimeUnit.SECONDS).build()
     }
 

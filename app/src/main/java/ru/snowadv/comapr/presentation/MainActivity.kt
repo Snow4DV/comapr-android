@@ -38,6 +38,7 @@ import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.presentation.ui.login.LoginScreen
 import ru.snowadv.comapr.presentation.ui.home.HomeScreen
+import ru.snowadv.comapr.presentation.ui.quiz.QuizScreen
 import ru.snowadv.comapr.presentation.ui.roadmap.single.RoadMapScreen
 import ru.snowadv.comapr.presentation.ui.session.modify.CreateEditSessionScreen
 import ru.snowadv.comapr.presentation.ui.session.single.SessionScreen
@@ -185,6 +186,22 @@ class MainActivity : ComponentActivity() {
                                 SessionScreen(
                                     modifier = Modifier.fillMaxSize(),
                                     mainViewModel = mainViewModel
+                                )
+                            }
+
+                            composable(
+                                "quiz/{sessionId}/{taskId}",
+                                arguments = listOf(
+                                    navArgument("sessionId") {
+                                        type = NavType.LongType
+                                    },
+                                    navArgument("taskId") {
+                                        type = NavType.LongType
+                                    }
+                                )
+                            ) {
+                                QuizScreen(
+                                    modifier = Modifier.fillMaxSize(),
                                 )
                             }
                         }

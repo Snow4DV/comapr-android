@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.snowadv.comapr.core.util.NavigationEvent
 import ru.snowadv.comapr.core.util.Resource
 import ru.snowadv.comapr.core.util.UiEvent
 import ru.snowadv.comapr.domain.model.MapSession
@@ -33,12 +34,12 @@ class SessionViewModel @Inject constructor(
     val state: State<SessionScreenState> = _state
 
 
+
     fun markTask(taskId: Long, state: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             dataRepository.markTask(sessionId, taskId, state).onEach {  res ->
                 updateSession(res)
             }.launchIn(this@launch)
-
         }
     }
     fun startSession() {
@@ -79,6 +80,12 @@ class SessionViewModel @Inject constructor(
                 updateSession(res)
             }.launchIn(this@launch)
 
+        }
+    }
+
+    fun openChallenges(taskId: Long) {
+        viewModelScope.launch {
+            eventAggregator.navigationChannel.send(NavigationEvent.ToQuizScreen(sessionId, taskId))
         }
     }
 

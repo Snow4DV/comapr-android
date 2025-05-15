@@ -250,11 +250,21 @@ class DataRepositoryImpl(
         })
     }
 
-    override fun getChallengesForTask(id: Long): Flow<Resource<List<Challenge>>> {
-        TODO("Not yet implemented")
+    override fun getChallengesForTask(id: Long): Flow<Resource<List<Challenge>>> = flow {
+        emit(Resource.Loading())
+        safeApiCall(block = {
+            emit(Resource.Success(api.getChallenges(id).map { it.toModel() }))
+        }, onException = {
+            emit(Resource.Error(it))
+        })
     }
 
-    override fun sendAnswers(taskId: Long, answers: Map<Long, String>) {
-        TODO("Not yet implemented")
+    override fun sendAnswers(sessionId: Long, taskId: Long, answers: Map<Long, String>): Flow<Resource<Boolean>> = flow {
+        emit(Resource.Loading())
+        safeApiCall(block = {
+            emit(Resource.Success(api.answerToChallenges(sessionId, taskId, answers).success))
+        }, onException = {
+            emit(Resource.Error(it))
+        })
     }
 }

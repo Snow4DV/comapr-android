@@ -71,5 +71,5 @@ interface DataRepository {
 
     fun getChallengesForTask(id: Long): Flow<Resource<List<Challenge>>>
 
-    fun sendAnswers(taskId: Long, answers: Map<Long, String>)
+    fun sendAnswers(sessionId: Long, taskId: Long, answers: Map<Long, String>): Flow<Resource<Boolean>>
 }

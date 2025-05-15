@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -88,7 +89,8 @@ fun SimpleTopBarWithBackButton(
     CenterAlignedTopAppBar(
         title = { Text(
             text = title,
-            maxLines = 1
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         ) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,

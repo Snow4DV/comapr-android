@@ -42,7 +42,7 @@ fun SessionScreen(
     val state = sessionViewModel.state.value
 
     LaunchedEffect(true) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             sessionViewModel.getSession()
         }
     }
@@ -60,7 +60,11 @@ fun SessionScreen(
             mainViewModel.sendUiEvent(UiEvent.OpenLink(it))
         },
         onTaskChecked = { task, taskState ->
-            sessionViewModel.markTask(task.id, taskState)
+            if (task.challenges.isEmpty()) {
+                sessionViewModel.markTask(task.id, taskState)
+            } else {
+                sessionViewModel.openChallenges(task.id)
+            }
         },
         sessionComposable = state.session?.let {
             {

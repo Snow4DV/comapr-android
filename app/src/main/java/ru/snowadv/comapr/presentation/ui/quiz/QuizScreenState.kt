@@ -6,4 +6,5 @@ data class QuizScreenState(
     val challenges: List<Challenge> = emptyList(),
     val answers: Map<Long, String> = emptyMap(),
     val loading: Boolean = true,
+    val error: Boolean = false,
 )

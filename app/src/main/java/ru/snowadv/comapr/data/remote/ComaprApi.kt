@@ -7,6 +7,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.snowadv.comapr.data.remote.dto.AnswerResultDto
 import ru.snowadv.comapr.data.remote.dto.CategoryDto
 import ru.snowadv.comapr.data.remote.dto.ClearMapSessionDto
 import ru.snowadv.comapr.data.remote.dto.LoginInfoDto
@@ -18,6 +19,7 @@ import ru.snowadv.comapr.data.remote.dto.NewSessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.SessionChatMessageDto
 import ru.snowadv.comapr.data.remote.dto.UserAndSessionsDto
 import ru.snowadv.comapr.data.remote.dto.CategorizedRoadMapsDto
+import ru.snowadv.comapr.data.remote.dto.ChallengeDto
 import ru.snowadv.comaprbackend.dto.SimpleRoadMapDto
 import ru.snowadv.comaprbackend.payload.response.ResponseInfoDto
 
@@ -30,7 +32,6 @@ interface ComaprApi {
     suspend fun authUser(@Header("Authorization") token: String): JwtAuthDto
     @GET("/api/v1/category/list")
     suspend fun getCategories(): List<CategoryDto>
-    // и другие ручки
 
     @GET("/api/v1/category/{id}")
     suspend fun getCategory(@Path("id") id: Long): CategoryDto
@@ -100,7 +101,17 @@ interface ComaprApi {
     @GET("/api/v1/user/activeSessions")
     suspend fun getActiveSessions(): List<MapSessionDto>
 
+    @GET("/api/v1/task/{id}/challenges")
+    suspend fun getChallenges(@Path("id") taskId: Long): List<ChallengeDto>
+
+    @POST("/api/v1/session/{id}/tasks/{taskId}/answerChallenges")
+    suspend fun answerToChallenges(
+        @Path("id") sessionId: Long,
+        @Path("taskId") taskId: Long,
+        @Body answers: Map<Long, String>,
+    ): AnswerResultDto
+
     companion object {
-        const val BASE_URL = "http://185.154.194.125:8086/"
+        const val BASE_URL = "http://192.168.1.9:8080/"
     }
 }
